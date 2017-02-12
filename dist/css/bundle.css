@@ -4523,8 +4523,159 @@ a.thumbnail {
 .long-delay {
   animation-delay: 700ms !important; }
 
+@charset "UTF-8";
+/*----------  Importar archivos externos  ----------*/
+/*----------  Colores  ----------*/
+/*----------  Medida de partículas  ----------*/
+@-webkit-keyframes particula1 {
+  0% {
+    -webkit-transform: rotate(0deg) translate(0px, 0px);
+            transform: rotate(0deg) translate(0px, 0px); }
+  100% {
+    -webkit-transform: rotate(-360deg) translate(50px, 50px);
+            transform: rotate(-360deg) translate(50px, 50px); } }
+@keyframes particula1 {
+  0% {
+    -webkit-transform: rotate(0deg) translate(0px, 0px);
+            transform: rotate(0deg) translate(0px, 0px); }
+  100% {
+    -webkit-transform: rotate(-360deg) translate(50px, 50px);
+            transform: rotate(-360deg) translate(50px, 50px); } }
+
+@-webkit-keyframes particula2 {
+  0% {
+    -webkit-transform: rotate(0deg) translate(0px, 0px);
+            transform: rotate(0deg) translate(0px, 0px); }
+  100% {
+    -webkit-transform: rotate(-360deg) translate(-50px, -50px);
+            transform: rotate(-360deg) translate(-50px, -50px); } }
+
+@keyframes particula2 {
+  0% {
+    -webkit-transform: rotate(0deg) translate(0px, 0px);
+            transform: rotate(0deg) translate(0px, 0px); }
+  100% {
+    -webkit-transform: rotate(-360deg) translate(-50px, -50px);
+            transform: rotate(-360deg) translate(-50px, -50px); } }
+
+@-webkit-keyframes particula3 {
+  0% {
+    -webkit-transform: rotate(0deg) translate(0px, 0px);
+            transform: rotate(0deg) translate(0px, 0px); }
+  100% {
+    -webkit-transform: rotate(-360deg) translate(-70px, -70px);
+            transform: rotate(-360deg) translate(-70px, -70px); } }
+
+@keyframes particula3 {
+  0% {
+    -webkit-transform: rotate(0deg) translate(0px, 0px);
+            transform: rotate(0deg) translate(0px, 0px); }
+  100% {
+    -webkit-transform: rotate(-360deg) translate(-70px, -70px);
+            transform: rotate(-360deg) translate(-70px, -70px); } }
+
+@-webkit-keyframes entrar {
+  0% {
+    -webkit-transform: translate(0px, 50px) scale(1.5);
+            transform: translate(0px, 50px) scale(1.5);
+    opacity: 0; }
+  100% {
+    opacity: 1;
+    -webkit-transform: translate(0px, 0px) scale(1);
+            transform: translate(0px, 0px) scale(1); } }
+
+@keyframes entrar {
+  0% {
+    -webkit-transform: translate(0px, 50px) scale(1.5);
+            transform: translate(0px, 50px) scale(1.5);
+    opacity: 0; }
+  100% {
+    opacity: 1;
+    -webkit-transform: translate(0px, 0px) scale(1);
+            transform: translate(0px, 0px) scale(1); } }
+
+/*----------  Configuración global  ----------*/
+* {
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  outline: 0px; }
+
 body {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
   font-size: 12px; }
+
+/*----------  Logotipo con partículas  ----------*/
+#logotipo {
+  width: 200px;
+  margin: 40px auto !important;
+  display: block !important;
+  position: relative; }
+
+#imagen-logo {
+  position: relative;
+  z-index: 3309; }
+
+#imgLogo {
+  -webkit-animation: entrar 2s ease-in-out;
+          animation: entrar 2s ease-in-out; }
+
+/*----------  Importar archivos externos  ----------*/
+.particula {
+  position: absolute; }
+
+.particula1 {
+  width: 0.6em;
+  height: 0.6em;
+  left: 60%;
+  top: 30%;
+  z-index: 3301;
+  background-color: #066C62;
+  -webkit-animation: particula1 1.5s ease-in-out infinite alternate;
+          animation: particula1 1.5s ease-in-out infinite alternate;
+  border-radius: 50%; }
+
+.particula2 {
+  width: 0.6em;
+  height: 0.6em;
+  left: 60%;
+  top: 30%;
+  z-index: 3300;
+  background-color: #00A69C;
+  -webkit-animation: particula2 2s ease-in-out infinite alternate;
+          animation: particula2 2s ease-in-out infinite alternate;
+  border-radius: 50%;
+  -webkit-filter: blur(3px);
+          filter: blur(3px); }
+
+.particula3 {
+  width: 1em;
+  height: 1em;
+  left: 40%;
+  top: 30%;
+  z-index: 3300;
+  background-color: #00A69C;
+  -webkit-animation: particula2 4s ease-in-out infinite alternate;
+          animation: particula2 4s ease-in-out infinite alternate;
+  border-radius: 50%; }
+
+.particula4 {
+  width: 0.6em;
+  height: 0.6em;
+  left: 50%;
+  top: 30%;
+  z-index: 3300;
+  background-color: #00A69C;
+  -webkit-animation: particula3 3s ease-in-out infinite alternate;
+          animation: particula3 3s ease-in-out infinite alternate;
+  border-radius: 50%;
+  -webkit-filter: blur(3px);
+          filter: blur(3px); }
+
+/*----------  s  ----------*/
+/*----------  M  ----------*/
+/*----------  XL  ----------*/
+/*----------  XXL  ----------*/
+.scrollme {
+  width: 200px;
+  height: 600px;
+  background-color: red; }

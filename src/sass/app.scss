@@ -1,4 +1,51 @@
+
+/*----------  Importar archivos externos  ----------*/
+
+
+@import 'lib/variables';
+@import 'lib/keyframes';
+
+/*----------  Configuración global  ----------*/
+
+
+*{
+	margin: 0px;
+	padding:0px;
+	border: 0px;
+	outline: 0px;
+
+}
 body{
-	display: flex;
 	font-size: 12px;
 }
+
+/*----------  Logotipo con partículas  ----------*/
+
+#logotipo{
+	width:200px;
+	margin: 40px auto !important;
+	display: block !important;
+	position:relative;
+
+}
+#imagen-logo{
+	position:relative;
+	z-index: 3309;
+}
+#imgLogo{
+	animation: entrar 2s ease-in-out;
+}
+
+/*----------  Importar archivos externos  ----------*/
+
+
+@import 'lib/particulas';
+@import 'lib/mediaqueries';
+
+.scrollme{
+	width:200px;
+	height: 600px;
+	background-color: red;
+}
+
+

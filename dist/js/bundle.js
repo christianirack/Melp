@@ -40377,6 +40377,10 @@ var _Imagen = __webpack_require__(180);
 
 var _Imagen2 = _interopRequireDefault(_Imagen);
 
+var _Ficha = __webpack_require__(181);
+
+var _Ficha2 = _interopRequireDefault(_Ficha);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
@@ -40405,19 +40409,60 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var info = [{ id: 1, name: 'hola' }, { id: 2, name: 'hola' }, { id: 3, name: 'hola' }, { id: 4, name: 'hola' }];
+
 var Imagen = function (_React$Component) {
 	_inherits(Imagen, _React$Component);
 
-	function Imagen() {
+	function Imagen(props) {
 		_classCallCheck(this, Imagen);
 
-		return _possibleConstructorReturn(this, (Imagen.__proto__ || Object.getPrototypeOf(Imagen)).apply(this, arguments));
+		var _this = _possibleConstructorReturn(this, (Imagen.__proto__ || Object.getPrototypeOf(Imagen)).call(this, props));
+
+		_this.state = { nombre: 'Silvia' };
+		_this.unclick = _this.unclick.bind(_this);
+		return _this;
 	}
 
 	_createClass(Imagen, [{
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			//alert(1);
+		}
+	}, {
+		key: 'componentWillUnmount',
+		value: function componentWillUnmount() {}
+	}, {
+		key: 'unclick',
+		value: function unclick(event) {
+			//alert(event);
+			this.setState({ nombre: 'Chris' });
+		}
+	}, {
 		key: 'render',
 		value: function render() {
-			return _react2.default.createElement('img', { src: this.props.src, width: this.props.width });
+			var url = "https://www.cleverfiles.com/howto/wp-content/uploads/2016/08/mini.jpg";
+			var info2 = info[2];
+			var date = new Date();
+			var cache = date.getTime();
+			return _react2.default.createElement(
+				'div',
+				{ id: 'logotipo', onClick: this.unclick },
+				_react2.default.createElement('div', { className: 'particula particula1' }),
+				_react2.default.createElement('div', { className: 'particula particula2' }),
+				_react2.default.createElement('div', { className: 'particula particula3' }),
+				_react2.default.createElement('div', { className: 'particula particula4' }),
+				_react2.default.createElement('img', { src: this.props.src + '?cache=' + cache, width: this.props.width, id: 'imagen-logo' }),
+				_react2.default.createElement(
+					'div',
+					null,
+					info2.id,
+					' - ',
+					this.props.name,
+					' ',
+					this.state.nombre
+				)
+			);
 		}
 	}]);
 
@@ -40428,15 +40473,20 @@ $(function () {
 	_reactDom2.default.render(_react2.default.createElement(
 		'div',
 		null,
-		_react2.default.createElement(Imagen, { src: 'img/logotipo.svg', width: '800px' }),
-		_react2.default.createElement(Imagen, { src: 'img/logotipo.svg', width: '100px' })
-	), document.getElementById('webApp'));
+		_react2.default.createElement(Imagen, { src: 'img/logotipo.svg', width: '300px', name: 'Mi nombre' })
+	), document.getElementById('imgLogo'));
 });
+
+/***/ }),
+/* 181 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: SyntaxError: 'this' is not allowed before super()\n\n\u001b[0m \u001b[90m 4 | \u001b[39m\u001b[36mclass\u001b[39m \u001b[33mFicha\u001b[39m \u001b[36mextends\u001b[39m \u001b[33mReact\u001b[39m\u001b[33m.\u001b[39m\u001b[33mComponent\u001b[39m{\n \u001b[90m 5 | \u001b[39m\tconstructor (props){\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 6 | \u001b[39m\t\t\u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mstate\u001b[33m=\u001b[39m{\u001b[36mdefault\u001b[39m\u001b[33m:\u001b[39m\u001b[32m''\u001b[39m}\u001b[33m;\u001b[39m\n \u001b[90m   | \u001b[39m\t\t\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 7 | \u001b[39m\n \u001b[90m 8 | \u001b[39m\t}\n \u001b[90m 9 | \u001b[39m\tcomponentDidMount(){\u001b[0m\n");
 
 /***/ })
 /******/ ]);
 $(function(){
-
+	$(document).foundation()
 	//alert('ok');
 
 })

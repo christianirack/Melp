@@ -1,0 +1,46 @@
+.particula{
+	position: absolute;
+	
+}
+.particula1{
+	width: $medida;
+	height: $medida;
+	left: 60%;
+	top: 30%;
+	z-index: 3301;
+	background-color: $azulOscuro;
+	animation: particula1 1.5s ease-in-out infinite alternate;
+	border-radius: 50%;
+}
+.particula2{
+	width: $medida;
+	height: $medida;
+	left: 60%;
+	top: 30%;
+	z-index: 3300;
+	background-color: $azulClaro;
+	animation: particula2 2s ease-in-out infinite alternate;
+	border-radius: 50%;
+	filter: blur(3px);
+}
+.particula3{
+	width: $medida2;
+	height: $medida2;
+	left: 40%;
+	top: 30%;
+	z-index: 3300;
+	background-color: $azulClaro;
+	animation: particula2 4s ease-in-out infinite alternate;
+	border-radius: 50%;
+}
+.particula4{
+	width: $medida;
+	height: $medida;
+	left: 50%;
+	top: 30%;
+	z-index: 3300;
+	background-color: $azulClaro;
+	animation: particula3 3s ease-in-out infinite alternate;
+	border-radius: 50%;
+	filter: blur(3px);
+}

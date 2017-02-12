@@ -40,7 +40,7 @@ const cssFiles = ['lib/foundation.css',
 
 /*----------  Ruta de archivos compilados  ----------*/
 
-const dest = '../dest/';
+const dest = '../dist/';
 const jsSrc = "./js/"
 const cssSrc = "./css/"
 const sassSrc = "./sass/"
@@ -60,7 +60,7 @@ for(var i in cssFiles){
 /*----------  Compilar SASS  ----------*/
 
 gulp.task('sass',()=>
-	gulp.src('./sass/**/*.scss')
+	gulp.src(sassSrc+'*.scss')
 	.pipe(sass({
 		outputStyle: 'nested'
 
