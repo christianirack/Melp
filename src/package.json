@@ -4,7 +4,8 @@
   "description": "Plataforma Web",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "w": "clear && figlet Webpack Run && webpack --progress --colors --watch",
+    "g": "clear && figlet Gulper Run && gulper dev"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,10 @@
   },
   "homepage": "https://github.com/christianirack/Melp#readme",
   "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.22.0",
     "fs": "0.0.1-security",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.1",
@@ -28,6 +33,9 @@
     "gulp-pug": "^3.2.0",
     "gulp-run": "^1.7.1",
     "gulp-sass": "^3.1.0",
-    "gulp-tattoo": "0.0.5"
+    "gulp-tattoo": "0.0.5",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "webpack": "^2.2.1"
   }
 }

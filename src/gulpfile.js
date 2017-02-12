@@ -32,6 +32,7 @@ const jsFiles = ['lib/jquery-3.1.1.js',
                 'lib/TimelineMax.min.js',
                 'lib/what-input.js',
                 'lib/foundation.js',
+                'react.js',
                 'app.js'];
 
 const cssFiles = ['lib/foundation.css',

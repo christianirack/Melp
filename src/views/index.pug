@@ -1,4 +1,12 @@
+//- Variables de documento
+
 - var website = "Melp"
+- var date = new Date();
+- var cache = date.getTime();
+- var js = "js/bundle.js?cache="+cache;
+- var css = "css/bundle.css?cache="+cache;
+
+//- Documento
 
 doctype html
 html(lang="en")
@@ -6,9 +14,10 @@ html(lang="en")
 		title=website
 		meta(charset="utf-8")
 		meta(name="viewport" content="width=device-width, initial-scale=1.0")
-		link(rel="stylesheet" href="css/bundle.css")
-		script(src="js/bundle.js")
+		link(rel="stylesheet" href=css)
+		script(src=js)
 	body
+		div
 		//Comienzo del sitio web
 		main.row
 			//Logo y menú
@@ -16,8 +25,8 @@ html(lang="en")
 					//Navegación 
 					nav.row.expanded
 						//Contenido
-						section.row.expanded
-							img(src="img/logotipo.svg" width="200px")
+						section.row.expanded#webApp
+							
 			//Pie de página
 			footer.expanded
 
