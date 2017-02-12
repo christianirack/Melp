@@ -40409,8 +40409,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var info = [{ id: 1, name: 'hola' }, { id: 2, name: 'hola' }, { id: 3, name: 'hola' }, { id: 4, name: 'hola' }];
-
 var Imagen = function (_React$Component) {
 	_inherits(Imagen, _React$Component);
 
@@ -40442,7 +40440,6 @@ var Imagen = function (_React$Component) {
 		key: 'render',
 		value: function render() {
 			var url = "https://www.cleverfiles.com/howto/wp-content/uploads/2016/08/mini.jpg";
-			var info2 = info[2];
 			var date = new Date();
 			var cache = date.getTime();
 			return _react2.default.createElement(
@@ -40456,8 +40453,6 @@ var Imagen = function (_React$Component) {
 				_react2.default.createElement(
 					'div',
 					null,
-					info2.id,
-					' - ',
 					this.props.name,
 					' ',
 					this.state.nombre
@@ -40479,9 +40474,88 @@ $(function () {
 
 /***/ }),
 /* 181 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module build failed: SyntaxError: 'this' is not allowed before super()\n\n\u001b[0m \u001b[90m 4 | \u001b[39m\u001b[36mclass\u001b[39m \u001b[33mFicha\u001b[39m \u001b[36mextends\u001b[39m \u001b[33mReact\u001b[39m\u001b[33m.\u001b[39m\u001b[33mComponent\u001b[39m{\n \u001b[90m 5 | \u001b[39m\tconstructor (props){\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 6 | \u001b[39m\t\t\u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mstate\u001b[33m=\u001b[39m{\u001b[36mdefault\u001b[39m\u001b[33m:\u001b[39m\u001b[32m''\u001b[39m}\u001b[33m;\u001b[39m\n \u001b[90m   | \u001b[39m\t\t\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 7 | \u001b[39m\n \u001b[90m 8 | \u001b[39m\t}\n \u001b[90m 9 | \u001b[39m\tcomponentDidMount(){\u001b[0m\n");
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(177);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(94);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*----------  Json  ----------*/
+
+var datos = [{ id: 1, name: 'hola' }, { id: 2, name: 'hola' }, { id: 3, name: 'hola' }, { id: 4, name: 'hola' }];
+var urlRequest = 'http://s3-us-west-2.amazonaws.com/lgoveabucket/data_melp.json';
+$.getJSON(urlRequest, function (data) {
+	console.log(data);
+	/*
+  var items = [];
+  $.each( data, function( key, val ) {
+    //items.push( "<li id='" + key + "'>" + val + "</li>" );
+    console.log('ok')
+  });
+  */
+});
+
+/*----------  Class  ----------*/
+
+var Ficha = function (_React$Component) {
+	_inherits(Ficha, _React$Component);
+
+	function Ficha(props) {
+		_classCallCheck(this, Ficha);
+
+		var _this = _possibleConstructorReturn(this, (Ficha.__proto__ || Object.getPrototypeOf(Ficha)).call(this, props));
+
+		_this.state = { default: '' };
+		return _this;
+	}
+
+	_createClass(Ficha, [{
+		key: 'componentDidMount',
+		value: function componentDidMount() {}
+	}, {
+		key: 'componentWillUnmount',
+		value: function componentWillUnmount() {}
+	}, {
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				datos.map(function (datos) {
+					return _react2.default.createElement(
+						'h1',
+						{ key: datos.id },
+						'asi es ',
+						datos.id
+					);
+				})
+			);
+		}
+	}]);
+
+	return Ficha;
+}(_react2.default.Component);
+
+$(function () {
+	_reactDom2.default.render(_react2.default.createElement(Ficha, null), document.getElementById('fichas'));
+});
 
 /***/ })
 /******/ ]);

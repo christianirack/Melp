@@ -1,16 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-var info = [
-	{id:1, name:'hola'},
-	{id:2, name:'hola'},
-	{id:3, name:'hola'},
-	{id:4, name:'hola'},
-]
-
-
-
-
 class Imagen extends React.Component {
 	constructor(props){
 		super(props);
@@ -29,7 +19,6 @@ class Imagen extends React.Component {
 	}
 	render(){
 		var url = "https://www.cleverfiles.com/howto/wp-content/uploads/2016/08/mini.jpg";
-		var info2 = info[2];
 		var date = new Date();
 		var cache = date.getTime();
 		return	<div id="logotipo" onClick={this.unclick}>
@@ -38,7 +27,7 @@ class Imagen extends React.Component {
 			<div className="particula particula3" />
 			<div className="particula particula4" />
 			<img src={ this.props.src+'?cache='+cache } width={ this.props.width } id="imagen-logo" />
-			<div>{info2.id} - { this.props.name } {this.state.nombre}</div>
+			<div>{ this.props.name } {this.state.nombre}</div>
 
 		</div>
 	}
