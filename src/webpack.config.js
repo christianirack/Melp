@@ -2,6 +2,9 @@
 const webpack = require('webpack');
 var path = require('path');
 var src = path.resolve(__dirname, 'js/react');
+
+
+
 const config = {
   entry: src+'/Main.jsx',
   output: {
@@ -15,7 +18,26 @@ const config = {
         exclude: /node_modules/,
         include : src,
         loader : 'babel-loader'
-      }]
+      }],
+
   }
 };
+
+/*
+,
+  plugins:[
+    new webpack.DefinePlugin({
+      'process.env':{
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress:{
+        warnings: true
+      }
+    })
+  ]
+*/
+
+
 module.exports = config;

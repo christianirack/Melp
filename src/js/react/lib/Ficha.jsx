@@ -3,15 +3,17 @@ import ReactDOM from 'react-dom';
 
 /*----------  Json  ----------*/
 
+//var imgs = 'https://placeimg.com/300/200/nature';
+
 var data = [];
 function json(){
 	var urlRequest = './json.php?url=http://s3-us-west-2.amazonaws.com/lgoveabucket/data_melp.json';
 	$.getJSON(urlRequest, function( dataCallback ) {
 		data = dataCallback;
-		//console.log(data.length);
+		/*
 		$.each( dataCallback, function( key, val ) {
-	    	console.log(key, val);
 	  	});
+	  	*/
 		renderear();
 	});
 }
@@ -19,9 +21,6 @@ function json(){
 /*----------  Class  ----------*/
 
 class Ficha extends React.Component{
-
-
-
 	constructor (props){
 		super(props);
 		this.state={default:''};

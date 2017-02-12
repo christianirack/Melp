@@ -17,6 +17,7 @@ html(lang="en")
 		link(rel="stylesheet" href=css)
 		script(src=js)
 	body
+		include lib/organic.html
 		//Comienzo del sitio web
 		main.row.expanded
 			//Logo y menú
@@ -24,10 +25,10 @@ html(lang="en")
 					//Navegación 
 					nav.row.expanded
 						div.columns.small-12#imgLogo
-						//Contenido
-					section.row.expanded#fichas
-							
-			//Pie de página
-			footer.expanded
+						div.colums.small-12 
+		section.row.expanded#fichas
+		//Pie de página
+		footer.row.expanded
+		include lib/svg.html
 
 

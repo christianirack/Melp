@@ -1,0 +1,29 @@
+/*----------  Animaciones  ----------*/
+
+
+.svgAbsolute{
+	width:100%;
+	position:absolute;
+	top:-20px;
+}
+.scrollme{
+	width:200px;
+	height: 600px;
+	background-color: red;
+}
+.path {
+   stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: dash 2s ease-in-out forwards;
+   stroke:$grisClaroR1;
+}
+.path2 {
+   stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: dash 2s .2s ease-in-out forwards ;
+  stroke:$grisClaroR1;
+}
+#organic-blob{
+	display: block !important;
+	margin: 0px auto !important;
+}

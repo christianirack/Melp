@@ -5,16 +5,20 @@ gulp = require('gulp'),
 sass = require('gulp-sass'),
 autoprefixer = require('gulp-autoprefixer'),
 concat = require('gulp-concat'),
-minify = require('gulp-minify'),
+minifier = require('gulp-minifier'),
 pug = require('gulp-pug'),
 tattoo = require('gulp-tattoo'),
 fs = require("fs"),
+obf = require('gulp-javascriptobfuscator'),
 run = require('gulp-run');
 
+
+process.env.NODE_ENV = 'development'
+const MODE = process.env.NODE_ENV;
 /*----------  Play time  ----------*/
 
 var  asciiArt = fs.readFileSync('./maintainer.txt', 'utf8')
-asciiArt+='\n\nchristian@irack.mx\nLinkedIn \n\n';
+asciiArt+='\n\nMELP\nDev: christian@irack.mx\nRepo: https://github.com/christianirack/Melp.git\nLinkedIn: https://www.linkedin.com/in/web-developer-full-stack\n';
 //const asciiArt = 'Dev: Christian Irack\nchristian@irack.mx\n\nLinkedIn: https://www.linkedin.com/in/web-developer-full-stack';
 
 /*----------  Manejo de errores (Instalar terminal-notifier CLI MacOs)  ----------*/
@@ -82,34 +86,108 @@ gulp.task('views', function buildHTML(){
 */
  
 gulp.task('views', ()=>
-  gulp.src('./views/*.pug')
-  .pipe(pug({
-    pretty:true
-  })).on('error', errores)
-  .pipe(tattoo(asciiArt))
-  .pipe(gulp.dest(dest))
+    {
+    if (MODE=='development'){
+      /*----------  Desarrollo  ----------*/
+      gulp.src('./views/*.pug')
+      .pipe(pug({
+        pretty:true,
+      })).on('error', errores)
+      .pipe(tattoo(asciiArt)).on('error', errores)
+      .pipe(gulp.dest(dest))
+    }else{
+      /*----------  Producción  ----------*/
+      
+     gulp.src('./views/*.pug')
+      .pipe(pug({
+        pretty:false,
+      })).on('error', errores)
+      .pipe(minifier({
+          minify: true,
+          collapseWhitespace: true,
+          conservativeCollapse: true,
+          minifyJS: false,
+          minifyCSS: false 
+      })).on('error', errores)
+      .pipe(tattoo(asciiArt)).on('error', errores)
+      .pipe(gulp.dest(dest))
+    }
+  }
 );
 
 /*----------  Bundle de archivos CSS & JS ----------*/
 
 gulp.task('concatcss', ()=>
-    gulp.src(css)
-    .pipe(concat('bundle.css')).on('error', errores)
-    .pipe(gulp.dest(dest+'css/'))
+  {
+    if (MODE=='development'){
+      /*----------  Desarrollo ----------*/
+        gulp.src(css)
+        .pipe(concat('bundle.css')).on('error', errores)
+        .pipe(gulp.dest(dest+'css/'))
+    }else{
+      /*----------  Producción  ----------*/
+        gulp.src(css)
+        .pipe(concat('bundle.css')).on('error', errores)
+        .pipe(minifier({
+          minify: true,
+          collapseWhitespace: true,
+          conservativeCollapse: true,
+          minifyJS: false,
+          minifyCSS: true 
+      })).on('error', errores)
+        .pipe(gulp.dest(dest+'css/'))
+    }
+  }
 );
 
-gulp.task('concatjs',['sass'], ()=>
-    gulp.src(js)
-    .pipe(concat('bundle.js')).on('error', errores)
-    .pipe(gulp.dest(dest+'js/'))
+gulp.task('concatjs', ()=>
+  {
+
+    
+    if (MODE=='development'){
+       /*----------  Desarrollo ----------*/
+      gulp.src(js)
+      .pipe(concat('bundle.js')).on('error', errores)
+      .pipe(gulp.dest(dest+'js/'))
+    }else{
+       /*----------  Producción  ----------*/
+      gulp.src(js)
+      .pipe(concat('bundle.js')).on('error', errores)
+      .pipe(minifier({
+        minify: true,
+        collapseWhitespace: true,
+        conservativeCollapse: true,
+        minifyJS: true,
+        minifyCSS: false 
+      })).on('error', errores)
+      .pipe(obf({
+        encodeString: true,
+        encodeNumber: true,
+        replaceNames: true,
+        moveString: true,
+        exclusions: ["^_get_", "^_set_", "^_mtd_"]
+       }))
+      .pipe(gulp.dest(dest+'js/'))
+    }
+  }
 );
 
 
 /*----------  Vigilar SRC ----------*/
 
-gulp.task('dev',['views','sass','concatcss','concatjs'], ()=> {
+gulp.task('default',['views','sass','concatcss','concatjs'], ()=> {
   gulp.watch([sassSrc+'**/*.scss'],['sass'])
   gulp.watch([cssSrc+'**/*.css'],['concatcss'])
 	gulp.watch([jsSrc+'**/*.js'],['concatjs'])
   gulp.watch([pugSrc+'*.pug'],['views'])
+  //
 })
+
+/*----------  Modo de compilación alerta  ----------*/
+
+
+function gulpFiles(){
+   var cmd = new run.Command("clear && figlet Mode: "+MODE);
+    cmd.exec();
+}
+gulpFiles();

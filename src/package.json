@@ -4,8 +4,8 @@
   "description": "Plataforma Web",
   "main": "index.js",
   "scripts": {
-    "w": "clear && figlet Webpack Run && webpack --progress --colors --watch",
-    "g": "clear && figlet Gulper Run && gulper dev"
+    "w": "clear && figlet Webpack Run && webpack --progress --watch",
+    "g": "clear && figlet Gulper Run && gulper default"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.1",
     "gulp-concat": "^2.6.1",
+    "gulp-minifier": "^0.2.1",
     "gulp-minify": "0.0.15",
     "gulp-pug": "^3.2.0",
     "gulp-run": "^1.7.1",

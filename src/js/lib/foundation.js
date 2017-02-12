@@ -7899,6 +7899,513 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 !function ($) {
 
   /**
+   * Sticky module.
+   * @module foundation.sticky
+   * @requires foundation.util.triggers
+   * @requires foundation.util.mediaQuery
+   */
+
+  var Sticky = function () {
+    /**
+     * Creates a new instance of a sticky thing.
+     * @class
+     * @param {jQuery} element - jQuery object to make sticky.
+     * @param {Object} options - options object passed when creating the element programmatically.
+     */
+    function Sticky(element, options) {
+      _classCallCheck(this, Sticky);
+
+      this.$element = element;
+      this.options = $.extend({}, Sticky.defaults, this.$element.data(), options);
+
+      this._init();
+
+      Foundation.registerPlugin(this, 'Sticky');
+    }
+
+    /**
+     * Initializes the sticky element by adding classes, getting/setting dimensions, breakpoints and attributes
+     * @function
+     * @private
+     */
+
+
+    _createClass(Sticky, [{
+      key: '_init',
+      value: function _init() {
+        var $parent = this.$element.parent('[data-sticky-container]'),
+            id = this.$element[0].id || Foundation.GetYoDigits(6, 'sticky'),
+            _this = this;
+
+        if (!$parent.length) {
+          this.wasWrapped = true;
+        }
+        this.$container = $parent.length ? $parent : $(this.options.container).wrapInner(this.$element);
+        this.$container.addClass(this.options.containerClass);
+
+        this.$element.addClass(this.options.stickyClass).attr({ 'data-resize': id });
+
+        this.scrollCount = this.options.checkEvery;
+        this.isStuck = false;
+        $(window).one('load.zf.sticky', function () {
+          //We calculate the container height to have correct values for anchor points offset calculation.
+          _this.containerHeight = _this.$element.css("display") == "none" ? 0 : _this.$element[0].getBoundingClientRect().height;
+          _this.$container.css('height', _this.containerHeight);
+          _this.elemHeight = _this.containerHeight;
+          if (_this.options.anchor !== '') {
+            _this.$anchor = $('#' + _this.options.anchor);
+          } else {
+            _this._parsePoints();
+          }
+
+          _this._setSizes(function () {
+            var scroll = window.pageYOffset;
+            _this._calc(false, scroll);
+            //Unstick the element will ensure that proper classes are set.
+            if (!_this.isStuck) {
+              _this._removeSticky(scroll >= _this.topPoint ? false : true);
+            }
+          });
+          _this._events(id.split('-').reverse().join('-'));
+        });
+      }
+
+      /**
+       * If using multiple elements as anchors, calculates the top and bottom pixel values the sticky thing should stick and unstick on.
+       * @function
+       * @private
+       */
+
+    }, {
+      key: '_parsePoints',
+      value: function _parsePoints() {
+        var top = this.options.topAnchor == "" ? 1 : this.options.topAnchor,
+            btm = this.options.btmAnchor == "" ? document.documentElement.scrollHeight : this.options.btmAnchor,
+            pts = [top, btm],
+            breaks = {};
+        for (var i = 0, len = pts.length; i < len && pts[i]; i++) {
+          var pt;
+          if (typeof pts[i] === 'number') {
+            pt = pts[i];
+          } else {
+            var place = pts[i].split(':'),
+                anchor = $('#' + place[0]);
+
+            pt = anchor.offset().top;
+            if (place[1] && place[1].toLowerCase() === 'bottom') {
+              pt += anchor[0].getBoundingClientRect().height;
+            }
+          }
+          breaks[i] = pt;
+        }
+
+        this.points = breaks;
+        return;
+      }
+
+      /**
+       * Adds event handlers for the scrolling element.
+       * @private
+       * @param {String} id - psuedo-random id for unique scroll event listener.
+       */
+
+    }, {
+      key: '_events',
+      value: function _events(id) {
+        var _this = this,
+            scrollListener = this.scrollListener = 'scroll.zf.' + id;
+        if (this.isOn) {
+          return;
+        }
+        if (this.canStick) {
+          this.isOn = true;
+          $(window).off(scrollListener).on(scrollListener, function (e) {
+            if (_this.scrollCount === 0) {
+              _this.scrollCount = _this.options.checkEvery;
+              _this._setSizes(function () {
+                _this._calc(false, window.pageYOffset);
+              });
+            } else {
+              _this.scrollCount--;
+              _this._calc(false, window.pageYOffset);
+            }
+          });
+        }
+
+        this.$element.off('resizeme.zf.trigger').on('resizeme.zf.trigger', function (e, el) {
+          _this._setSizes(function () {
+            _this._calc(false);
+            if (_this.canStick) {
+              if (!_this.isOn) {
+                _this._events(id);
+              }
+            } else if (_this.isOn) {
+              _this._pauseListeners(scrollListener);
+            }
+          });
+        });
+      }
+
+      /**
+       * Removes event handlers for scroll and change events on anchor.
+       * @fires Sticky#pause
+       * @param {String} scrollListener - unique, namespaced scroll listener attached to `window`
+       */
+
+    }, {
+      key: '_pauseListeners',
+      value: function _pauseListeners(scrollListener) {
+        this.isOn = false;
+        $(window).off(scrollListener);
+
+        /**
+         * Fires when the plugin is paused due to resize event shrinking the view.
+         * @event Sticky#pause
+         * @private
+         */
+        this.$element.trigger('pause.zf.sticky');
+      }
+
+      /**
+       * Called on every `scroll` event and on `_init`
+       * fires functions based on booleans and cached values
+       * @param {Boolean} checkSizes - true if plugin should recalculate sizes and breakpoints.
+       * @param {Number} scroll - current scroll position passed from scroll event cb function. If not passed, defaults to `window.pageYOffset`.
+       */
+
+    }, {
+      key: '_calc',
+      value: function _calc(checkSizes, scroll) {
+        if (checkSizes) {
+          this._setSizes();
+        }
+
+        if (!this.canStick) {
+          if (this.isStuck) {
+            this._removeSticky(true);
+          }
+          return false;
+        }
+
+        if (!scroll) {
+          scroll = window.pageYOffset;
+        }
+
+        if (scroll >= this.topPoint) {
+          if (scroll <= this.bottomPoint) {
+            if (!this.isStuck) {
+              this._setSticky();
+            }
+          } else {
+            if (this.isStuck) {
+              this._removeSticky(false);
+            }
+          }
+        } else {
+          if (this.isStuck) {
+            this._removeSticky(true);
+          }
+        }
+      }
+
+      /**
+       * Causes the $element to become stuck.
+       * Adds `position: fixed;`, and helper classes.
+       * @fires Sticky#stuckto
+       * @function
+       * @private
+       */
+
+    }, {
+      key: '_setSticky',
+      value: function _setSticky() {
+        var _this = this,
+            stickTo = this.options.stickTo,
+            mrgn = stickTo === 'top' ? 'marginTop' : 'marginBottom',
+            notStuckTo = stickTo === 'top' ? 'bottom' : 'top',
+            css = {};
+
+        css[mrgn] = this.options[mrgn] + 'em';
+        css[stickTo] = 0;
+        css[notStuckTo] = 'auto';
+        this.isStuck = true;
+        this.$element.removeClass('is-anchored is-at-' + notStuckTo).addClass('is-stuck is-at-' + stickTo).css(css)
+        /**
+         * Fires when the $element has become `position: fixed;`
+         * Namespaced to `top` or `bottom`, e.g. `sticky.zf.stuckto:top`
+         * @event Sticky#stuckto
+         */
+        .trigger('sticky.zf.stuckto:' + stickTo);
+        this.$element.on("transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd", function () {
+          _this._setSizes();
+        });
+      }
+
+      /**
+       * Causes the $element to become unstuck.
+       * Removes `position: fixed;`, and helper classes.
+       * Adds other helper classes.
+       * @param {Boolean} isTop - tells the function if the $element should anchor to the top or bottom of its $anchor element.
+       * @fires Sticky#unstuckfrom
+       * @private
+       */
+
+    }, {
+      key: '_removeSticky',
+      value: function _removeSticky(isTop) {
+        var stickTo = this.options.stickTo,
+            stickToTop = stickTo === 'top',
+            css = {},
+            anchorPt = (this.points ? this.points[1] - this.points[0] : this.anchorHeight) - this.elemHeight,
+            mrgn = stickToTop ? 'marginTop' : 'marginBottom',
+            notStuckTo = stickToTop ? 'bottom' : 'top',
+            topOrBottom = isTop ? 'top' : 'bottom';
+
+        css[mrgn] = 0;
+
+        css['bottom'] = 'auto';
+        if (isTop) {
+          css['top'] = 0;
+        } else {
+          css['top'] = anchorPt;
+        }
+
+        this.isStuck = false;
+        this.$element.removeClass('is-stuck is-at-' + stickTo).addClass('is-anchored is-at-' + topOrBottom).css(css)
+        /**
+         * Fires when the $element has become anchored.
+         * Namespaced to `top` or `bottom`, e.g. `sticky.zf.unstuckfrom:bottom`
+         * @event Sticky#unstuckfrom
+         */
+        .trigger('sticky.zf.unstuckfrom:' + topOrBottom);
+      }
+
+      /**
+       * Sets the $element and $container sizes for plugin.
+       * Calls `_setBreakPoints`.
+       * @param {Function} cb - optional callback function to fire on completion of `_setBreakPoints`.
+       * @private
+       */
+
+    }, {
+      key: '_setSizes',
+      value: function _setSizes(cb) {
+        this.canStick = Foundation.MediaQuery.is(this.options.stickyOn);
+        if (!this.canStick) {
+          if (cb && typeof cb === 'function') {
+            cb();
+          }
+        }
+        var _this = this,
+            newElemWidth = this.$container[0].getBoundingClientRect().width,
+            comp = window.getComputedStyle(this.$container[0]),
+            pdngl = parseInt(comp['padding-left'], 10),
+            pdngr = parseInt(comp['padding-right'], 10);
+
+        if (this.$anchor && this.$anchor.length) {
+          this.anchorHeight = this.$anchor[0].getBoundingClientRect().height;
+        } else {
+          this._parsePoints();
+        }
+
+        this.$element.css({
+          'max-width': newElemWidth - pdngl - pdngr + 'px'
+        });
+
+        var newContainerHeight = this.$element[0].getBoundingClientRect().height || this.containerHeight;
+        if (this.$element.css("display") == "none") {
+          newContainerHeight = 0;
+        }
+        this.containerHeight = newContainerHeight;
+        this.$container.css({
+          height: newContainerHeight
+        });
+        this.elemHeight = newContainerHeight;
+
+        if (!this.isStuck) {
+          if (this.$element.hasClass('is-at-bottom')) {
+            var anchorPt = (this.points ? this.points[1] - this.$container.offset().top : this.anchorHeight) - this.elemHeight;
+            this.$element.css('top', anchorPt);
+          }
+        }
+
+        this._setBreakPoints(newContainerHeight, function () {
+          if (cb && typeof cb === 'function') {
+            cb();
+          }
+        });
+      }
+
+      /**
+       * Sets the upper and lower breakpoints for the element to become sticky/unsticky.
+       * @param {Number} elemHeight - px value for sticky.$element height, calculated by `_setSizes`.
+       * @param {Function} cb - optional callback function to be called on completion.
+       * @private
+       */
+
+    }, {
+      key: '_setBreakPoints',
+      value: function _setBreakPoints(elemHeight, cb) {
+        if (!this.canStick) {
+          if (cb && typeof cb === 'function') {
+            cb();
+          } else {
+            return false;
+          }
+        }
+        var mTop = emCalc(this.options.marginTop),
+            mBtm = emCalc(this.options.marginBottom),
+            topPoint = this.points ? this.points[0] : this.$anchor.offset().top,
+            bottomPoint = this.points ? this.points[1] : topPoint + this.anchorHeight,
+
+        // topPoint = this.$anchor.offset().top || this.points[0],
+        // bottomPoint = topPoint + this.anchorHeight || this.points[1],
+        winHeight = window.innerHeight;
+
+        if (this.options.stickTo === 'top') {
+          topPoint -= mTop;
+          bottomPoint -= elemHeight + mTop;
+        } else if (this.options.stickTo === 'bottom') {
+          topPoint -= winHeight - (elemHeight + mBtm);
+          bottomPoint -= winHeight - mBtm;
+        } else {
+          //this would be the stickTo: both option... tricky
+        }
+
+        this.topPoint = topPoint;
+        this.bottomPoint = bottomPoint;
+
+        if (cb && typeof cb === 'function') {
+          cb();
+        }
+      }
+
+      /**
+       * Destroys the current sticky element.
+       * Resets the element to the top position first.
+       * Removes event listeners, JS-added css properties and classes, and unwraps the $element if the JS added the $container.
+       * @function
+       */
+
+    }, {
+      key: 'destroy',
+      value: function destroy() {
+        this._removeSticky(true);
+
+        this.$element.removeClass(this.options.stickyClass + ' is-anchored is-at-top').css({
+          height: '',
+          top: '',
+          bottom: '',
+          'max-width': ''
+        }).off('resizeme.zf.trigger');
+        if (this.$anchor && this.$anchor.length) {
+          this.$anchor.off('change.zf.sticky');
+        }
+        $(window).off(this.scrollListener);
+
+        if (this.wasWrapped) {
+          this.$element.unwrap();
+        } else {
+          this.$container.removeClass(this.options.containerClass).css({
+            height: ''
+          });
+        }
+        Foundation.unregisterPlugin(this);
+      }
+    }]);
+
+    return Sticky;
+  }();
+
+  Sticky.defaults = {
+    /**
+     * Customizable container template. Add your own classes for styling and sizing.
+     * @option
+     * @example '&lt;div data-sticky-container class="small-6 columns"&gt;&lt;/div&gt;'
+     */
+    container: '<div data-sticky-container></div>',
+    /**
+     * Location in the view the element sticks to.
+     * @option
+     * @example 'top'
+     */
+    stickTo: 'top',
+    /**
+     * If anchored to a single element, the id of that element.
+     * @option
+     * @example 'exampleId'
+     */
+    anchor: '',
+    /**
+     * If using more than one element as anchor points, the id of the top anchor.
+     * @option
+     * @example 'exampleId:top'
+     */
+    topAnchor: '',
+    /**
+     * If using more than one element as anchor points, the id of the bottom anchor.
+     * @option
+     * @example 'exampleId:bottom'
+     */
+    btmAnchor: '',
+    /**
+     * Margin, in `em`'s to apply to the top of the element when it becomes sticky.
+     * @option
+     * @example 1
+     */
+    marginTop: 1,
+    /**
+     * Margin, in `em`'s to apply to the bottom of the element when it becomes sticky.
+     * @option
+     * @example 1
+     */
+    marginBottom: 1,
+    /**
+     * Breakpoint string that is the minimum screen size an element should become sticky.
+     * @option
+     * @example 'medium'
+     */
+    stickyOn: 'medium',
+    /**
+     * Class applied to sticky element, and removed on destruction. Foundation defaults to `sticky`.
+     * @option
+     * @example 'sticky'
+     */
+    stickyClass: 'sticky',
+    /**
+     * Class applied to sticky container. Foundation defaults to `sticky-container`.
+     * @option
+     * @example 'sticky-container'
+     */
+    containerClass: 'sticky-container',
+    /**
+     * Number of scroll events between the plugin's recalculating sticky points. Setting it to `0` will cause it to recalc every scroll event, setting it to `-1` will prevent recalc on scroll.
+     * @option
+     * @example 50
+     */
+    checkEvery: -1
+  };
+
+  /**
+   * Helper function to calculate em values
+   * @param Number {em} - number of em's to calculate into pixels
+   */
+  function emCalc(em) {
+    return parseInt(window.getComputedStyle(document.body, null).fontSize, 10) * em;
+  }
+
+  // Window exports
+  Foundation.plugin(Sticky, 'Sticky');
+}(jQuery);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+!function ($) {
+
+  /**
    * Interchange module.
    * @module foundation.interchange
    * @requires foundation.util.mediaQuery
@@ -8118,4 +8625,1353 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   // Window exports
   Foundation.plugin(Interchange, 'Interchange');
+}(jQuery);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+!function ($) {
+
+  /**
+   * ResponsiveToggle module.
+   * @module foundation.responsiveToggle
+   * @requires foundation.util.mediaQuery
+   */
+
+  var ResponsiveToggle = function () {
+    /**
+     * Creates a new instance of Tab Bar.
+     * @class
+     * @fires ResponsiveToggle#init
+     * @param {jQuery} element - jQuery object to attach tab bar functionality to.
+     * @param {Object} options - Overrides to the default plugin settings.
+     */
+    function ResponsiveToggle(element, options) {
+      _classCallCheck(this, ResponsiveToggle);
+
+      this.$element = $(element);
+      this.options = $.extend({}, ResponsiveToggle.defaults, this.$element.data(), options);
+
+      this._init();
+      this._events();
+
+      Foundation.registerPlugin(this, 'ResponsiveToggle');
+    }
+
+    /**
+     * Initializes the tab bar by finding the target element, toggling element, and running update().
+     * @function
+     * @private
+     */
+
+
+    _createClass(ResponsiveToggle, [{
+      key: '_init',
+      value: function _init() {
+        var targetID = this.$element.data('responsive-toggle');
+        if (!targetID) {
+          console.error('Your tab bar needs an ID of a Menu as the value of data-tab-bar.');
+        }
+
+        this.$targetMenu = $('#' + targetID);
+        this.$toggler = this.$element.find('[data-toggle]');
+        this.options = $.extend({}, this.options, this.$targetMenu.data());
+
+        // If they were set, parse the animation classes
+        if (this.options.animate) {
+          var input = this.options.animate.split(' ');
+
+          this.animationIn = input[0];
+          this.animationOut = input[1] || null;
+        }
+
+        this._update();
+      }
+
+      /**
+       * Adds necessary event handlers for the tab bar to work.
+       * @function
+       * @private
+       */
+
+    }, {
+      key: '_events',
+      value: function _events() {
+        var _this = this;
+
+        this._updateMqHandler = this._update.bind(this);
+
+        $(window).on('changed.zf.mediaquery', this._updateMqHandler);
+
+        this.$toggler.on('click.zf.responsiveToggle', this.toggleMenu.bind(this));
+      }
+
+      /**
+       * Checks the current media query to determine if the tab bar should be visible or hidden.
+       * @function
+       * @private
+       */
+
+    }, {
+      key: '_update',
+      value: function _update() {
+        // Mobile
+        if (!Foundation.MediaQuery.atLeast(this.options.hideFor)) {
+          this.$element.show();
+          this.$targetMenu.hide();
+        }
+
+        // Desktop
+        else {
+            this.$element.hide();
+            this.$targetMenu.show();
+          }
+      }
+
+      /**
+       * Toggles the element attached to the tab bar. The toggle only happens if the screen is small enough to allow it.
+       * @function
+       * @fires ResponsiveToggle#toggled
+       */
+
+    }, {
+      key: 'toggleMenu',
+      value: function toggleMenu() {
+        var _this2 = this;
+
+        if (!Foundation.MediaQuery.atLeast(this.options.hideFor)) {
+          if (this.options.animate) {
+            if (this.$targetMenu.is(':hidden')) {
+              Foundation.Motion.animateIn(this.$targetMenu, this.animationIn, function () {
+                /**
+                 * Fires when the element attached to the tab bar toggles.
+                 * @event ResponsiveToggle#toggled
+                 */
+                _this2.$element.trigger('toggled.zf.responsiveToggle');
+                _this2.$targetMenu.find('[data-mutate]').triggerHandler('mutateme.zf.trigger');
+              });
+            } else {
+              Foundation.Motion.animateOut(this.$targetMenu, this.animationOut, function () {
+                /**
+                 * Fires when the element attached to the tab bar toggles.
+                 * @event ResponsiveToggle#toggled
+                 */
+                _this2.$element.trigger('toggled.zf.responsiveToggle');
+              });
+            }
+          } else {
+            this.$targetMenu.toggle(0);
+            this.$targetMenu.find('[data-mutate]').trigger('mutateme.zf.trigger');
+
+            /**
+             * Fires when the element attached to the tab bar toggles.
+             * @event ResponsiveToggle#toggled
+             */
+            this.$element.trigger('toggled.zf.responsiveToggle');
+          }
+        }
+      }
+    }, {
+      key: 'destroy',
+      value: function destroy() {
+        this.$element.off('.zf.responsiveToggle');
+        this.$toggler.off('.zf.responsiveToggle');
+
+        $(window).off('changed.zf.mediaquery', this._updateMqHandler);
+
+        Foundation.unregisterPlugin(this);
+      }
+    }]);
+
+    return ResponsiveToggle;
+  }();
+
+  ResponsiveToggle.defaults = {
+    /**
+     * The breakpoint after which the menu is always shown, and the tab bar is hidden.
+     * @option
+     * @example 'medium'
+     */
+    hideFor: 'medium',
+
+    /**
+     * To decide if the toggle should be animated or not.
+     * @option
+     * @example false
+     */
+    animate: false
+  };
+
+  // Window exports
+  Foundation.plugin(ResponsiveToggle, 'ResponsiveToggle');
+}(jQuery);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+!function ($) {
+
+  /**
+   * Toggler module.
+   * @module foundation.toggler
+   * @requires foundation.util.motion
+   * @requires foundation.util.triggers
+   */
+
+  var Toggler = function () {
+    /**
+     * Creates a new instance of Toggler.
+     * @class
+     * @fires Toggler#init
+     * @param {Object} element - jQuery object to add the trigger to.
+     * @param {Object} options - Overrides to the default plugin settings.
+     */
+    function Toggler(element, options) {
+      _classCallCheck(this, Toggler);
+
+      this.$element = element;
+      this.options = $.extend({}, Toggler.defaults, element.data(), options);
+      this.className = '';
+
+      this._init();
+      this._events();
+
+      Foundation.registerPlugin(this, 'Toggler');
+    }
+
+    /**
+     * Initializes the Toggler plugin by parsing the toggle class from data-toggler, or animation classes from data-animate.
+     * @function
+     * @private
+     */
+
+
+    _createClass(Toggler, [{
+      key: '_init',
+      value: function _init() {
+        var input;
+        // Parse animation classes if they were set
+        if (this.options.animate) {
+          input = this.options.animate.split(' ');
+
+          this.animationIn = input[0];
+          this.animationOut = input[1] || null;
+        }
+        // Otherwise, parse toggle class
+        else {
+            input = this.$element.data('toggler');
+            // Allow for a . at the beginning of the string
+            this.className = input[0] === '.' ? input.slice(1) : input;
+          }
+
+        // Add ARIA attributes to triggers
+        var id = this.$element[0].id;
+        $('[data-open="' + id + '"], [data-close="' + id + '"], [data-toggle="' + id + '"]').attr('aria-controls', id);
+        // If the target is hidden, add aria-hidden
+        this.$element.attr('aria-expanded', this.$element.is(':hidden') ? false : true);
+      }
+
+      /**
+       * Initializes events for the toggle trigger.
+       * @function
+       * @private
+       */
+
+    }, {
+      key: '_events',
+      value: function _events() {
+        this.$element.off('toggle.zf.trigger').on('toggle.zf.trigger', this.toggle.bind(this));
+      }
+
+      /**
+       * Toggles the target class on the target element. An event is fired from the original trigger depending on if the resultant state was "on" or "off".
+       * @function
+       * @fires Toggler#on
+       * @fires Toggler#off
+       */
+
+    }, {
+      key: 'toggle',
+      value: function toggle() {
+        this[this.options.animate ? '_toggleAnimate' : '_toggleClass']();
+      }
+    }, {
+      key: '_toggleClass',
+      value: function _toggleClass() {
+        this.$element.toggleClass(this.className);
+
+        var isOn = this.$element.hasClass(this.className);
+        if (isOn) {
+          /**
+           * Fires if the target element has the class after a toggle.
+           * @event Toggler#on
+           */
+          this.$element.trigger('on.zf.toggler');
+        } else {
+          /**
+           * Fires if the target element does not have the class after a toggle.
+           * @event Toggler#off
+           */
+          this.$element.trigger('off.zf.toggler');
+        }
+
+        this._updateARIA(isOn);
+        this.$element.find('[data-mutate]').trigger('mutateme.zf.trigger');
+      }
+    }, {
+      key: '_toggleAnimate',
+      value: function _toggleAnimate() {
+        var _this = this;
+
+        if (this.$element.is(':hidden')) {
+          Foundation.Motion.animateIn(this.$element, this.animationIn, function () {
+            _this._updateARIA(true);
+            this.trigger('on.zf.toggler');
+            this.find('[data-mutate]').trigger('mutateme.zf.trigger');
+          });
+        } else {
+          Foundation.Motion.animateOut(this.$element, this.animationOut, function () {
+            _this._updateARIA(false);
+            this.trigger('off.zf.toggler');
+            this.find('[data-mutate]').trigger('mutateme.zf.trigger');
+          });
+        }
+      }
+    }, {
+      key: '_updateARIA',
+      value: function _updateARIA(isOn) {
+        this.$element.attr('aria-expanded', isOn ? true : false);
+      }
+
+      /**
+       * Destroys the instance of Toggler on the element.
+       * @function
+       */
+
+    }, {
+      key: 'destroy',
+      value: function destroy() {
+        this.$element.off('.zf.toggler');
+        Foundation.unregisterPlugin(this);
+      }
+    }]);
+
+    return Toggler;
+  }();
+
+  Toggler.defaults = {
+    /**
+     * Tells the plugin if the element should animated when toggled.
+     * @option
+     * @example false
+     */
+    animate: false
+  };
+
+  // Window exports
+  Foundation.plugin(Toggler, 'Toggler');
+}(jQuery);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+!function ($) {
+
+  /**
+   * Abide module.
+   * @module foundation.abide
+   */
+
+  var Abide = function () {
+    /**
+     * Creates a new instance of Abide.
+     * @class
+     * @fires Abide#init
+     * @param {Object} element - jQuery object to add the trigger to.
+     * @param {Object} options - Overrides to the default plugin settings.
+     */
+    function Abide(element) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      _classCallCheck(this, Abide);
+
+      this.$element = element;
+      this.options = $.extend({}, Abide.defaults, this.$element.data(), options);
+
+      this._init();
+
+      Foundation.registerPlugin(this, 'Abide');
+    }
+
+    /**
+     * Initializes the Abide plugin and calls functions to get Abide functioning on load.
+     * @private
+     */
+
+
+    _createClass(Abide, [{
+      key: '_init',
+      value: function _init() {
+        this.$inputs = this.$element.find('input, textarea, select');
+
+        this._events();
+      }
+
+      /**
+       * Initializes events for Abide.
+       * @private
+       */
+
+    }, {
+      key: '_events',
+      value: function _events() {
+        var _this2 = this;
+
+        this.$element.off('.abide').on('reset.zf.abide', function () {
+          _this2.resetForm();
+        }).on('submit.zf.abide', function () {
+          return _this2.validateForm();
+        });
+
+        if (this.options.validateOn === 'fieldChange') {
+          this.$inputs.off('change.zf.abide').on('change.zf.abide', function (e) {
+            _this2.validateInput($(e.target));
+          });
+        }
+
+        if (this.options.liveValidate) {
+          this.$inputs.off('input.zf.abide').on('input.zf.abide', function (e) {
+            _this2.validateInput($(e.target));
+          });
+        }
+
+        if (this.options.validateOnBlur) {
+          this.$inputs.off('blur.zf.abide').on('blur.zf.abide', function (e) {
+            _this2.validateInput($(e.target));
+          });
+        }
+      }
+
+      /**
+       * Calls necessary functions to update Abide upon DOM change
+       * @private
+       */
+
+    }, {
+      key: '_reflow',
+      value: function _reflow() {
+        this._init();
+      }
+
+      /**
+       * Checks whether or not a form element has the required attribute and if it's checked or not
+       * @param {Object} element - jQuery object to check for required attribute
+       * @returns {Boolean} Boolean value depends on whether or not attribute is checked or empty
+       */
+
+    }, {
+      key: 'requiredCheck',
+      value: function requiredCheck($el) {
+        if (!$el.attr('required')) return true;
+
+        var isGood = true;
+
+        switch ($el[0].type) {
+          case 'checkbox':
+            isGood = $el[0].checked;
+            break;
+
+          case 'select':
+          case 'select-one':
+          case 'select-multiple':
+            var opt = $el.find('option:selected');
+            if (!opt.length || !opt.val()) isGood = false;
+            break;
+
+          default:
+            if (!$el.val() || !$el.val().length) isGood = false;
+        }
+
+        return isGood;
+      }
+
+      /**
+       * Based on $el, get the first element with selector in this order:
+       * 1. The element's direct sibling('s).
+       * 3. The element's parent's children.
+       *
+       * This allows for multiple form errors per input, though if none are found, no form errors will be shown.
+       *
+       * @param {Object} $el - jQuery object to use as reference to find the form error selector.
+       * @returns {Object} jQuery object with the selector.
+       */
+
+    }, {
+      key: 'findFormError',
+      value: function findFormError($el) {
+        var $error = $el.siblings(this.options.formErrorSelector);
+
+        if (!$error.length) {
+          $error = $el.parent().find(this.options.formErrorSelector);
+        }
+
+        return $error;
+      }
+
+      /**
+       * Get the first element in this order:
+       * 2. The <label> with the attribute `[for="someInputId"]`
+       * 3. The `.closest()` <label>
+       *
+       * @param {Object} $el - jQuery object to check for required attribute
+       * @returns {Boolean} Boolean value depends on whether or not attribute is checked or empty
+       */
+
+    }, {
+      key: 'findLabel',
+      value: function findLabel($el) {
+        var id = $el[0].id;
+        var $label = this.$element.find('label[for="' + id + '"]');
+
+        if (!$label.length) {
+          return $el.closest('label');
+        }
+
+        return $label;
+      }
+
+      /**
+       * Get the set of labels associated with a set of radio els in this order
+       * 2. The <label> with the attribute `[for="someInputId"]`
+       * 3. The `.closest()` <label>
+       *
+       * @param {Object} $el - jQuery object to check for required attribute
+       * @returns {Boolean} Boolean value depends on whether or not attribute is checked or empty
+       */
+
+    }, {
+      key: 'findRadioLabels',
+      value: function findRadioLabels($els) {
+        var _this3 = this;
+
+        var labels = $els.map(function (i, el) {
+          var id = el.id;
+          var $label = _this3.$element.find('label[for="' + id + '"]');
+
+          if (!$label.length) {
+            $label = $(el).closest('label');
+          }
+          return $label[0];
+        });
+
+        return $(labels);
+      }
+
+      /**
+       * Adds the CSS error class as specified by the Abide settings to the label, input, and the form
+       * @param {Object} $el - jQuery object to add the class to
+       */
+
+    }, {
+      key: 'addErrorClasses',
+      value: function addErrorClasses($el) {
+        var $label = this.findLabel($el);
+        var $formError = this.findFormError($el);
+
+        if ($label.length) {
+          $label.addClass(this.options.labelErrorClass);
+        }
+
+        if ($formError.length) {
+          $formError.addClass(this.options.formErrorClass);
+        }
+
+        $el.addClass(this.options.inputErrorClass).attr('data-invalid', '');
+      }
+
+      /**
+       * Remove CSS error classes etc from an entire radio button group
+       * @param {String} groupName - A string that specifies the name of a radio button group
+       *
+       */
+
+    }, {
+      key: 'removeRadioErrorClasses',
+      value: function removeRadioErrorClasses(groupName) {
+        var $els = this.$element.find(':radio[name="' + groupName + '"]');
+        var $labels = this.findRadioLabels($els);
+        var $formErrors = this.findFormError($els);
+
+        if ($labels.length) {
+          $labels.removeClass(this.options.labelErrorClass);
+        }
+
+        if ($formErrors.length) {
+          $formErrors.removeClass(this.options.formErrorClass);
+        }
+
+        $els.removeClass(this.options.inputErrorClass).removeAttr('data-invalid');
+      }
+
+      /**
+       * Removes CSS error class as specified by the Abide settings from the label, input, and the form
+       * @param {Object} $el - jQuery object to remove the class from
+       */
+
+    }, {
+      key: 'removeErrorClasses',
+      value: function removeErrorClasses($el) {
+        // radios need to clear all of the els
+        if ($el[0].type == 'radio') {
+          return this.removeRadioErrorClasses($el.attr('name'));
+        }
+
+        var $label = this.findLabel($el);
+        var $formError = this.findFormError($el);
+
+        if ($label.length) {
+          $label.removeClass(this.options.labelErrorClass);
+        }
+
+        if ($formError.length) {
+          $formError.removeClass(this.options.formErrorClass);
+        }
+
+        $el.removeClass(this.options.inputErrorClass).removeAttr('data-invalid');
+      }
+
+      /**
+       * Goes through a form to find inputs and proceeds to validate them in ways specific to their type
+       * @fires Abide#invalid
+       * @fires Abide#valid
+       * @param {Object} element - jQuery object to validate, should be an HTML input
+       * @returns {Boolean} goodToGo - If the input is valid or not.
+       */
+
+    }, {
+      key: 'validateInput',
+      value: function validateInput($el) {
+        var _this4 = this;
+
+        var clearRequire = this.requiredCheck($el),
+            validated = false,
+            customValidator = true,
+            validator = $el.attr('data-validator'),
+            equalTo = true;
+
+        // don't validate ignored inputs or hidden inputs
+        if ($el.is('[data-abide-ignore]') || $el.is('[type="hidden"]')) {
+          return true;
+        }
+
+        switch ($el[0].type) {
+          case 'radio':
+            validated = this.validateRadio($el.attr('name'));
+            break;
+
+          case 'checkbox':
+            validated = clearRequire;
+            break;
+
+          case 'select':
+          case 'select-one':
+          case 'select-multiple':
+            validated = clearRequire;
+            break;
+
+          default:
+            validated = this.validateText($el);
+        }
+
+        if (validator) {
+          customValidator = this.matchValidation($el, validator, $el.attr('required'));
+        }
+
+        if ($el.attr('data-equalto')) {
+          equalTo = this.options.validators.equalTo($el);
+        }
+
+        var goodToGo = [clearRequire, validated, customValidator, equalTo].indexOf(false) === -1;
+        var message = (goodToGo ? 'valid' : 'invalid') + '.zf.abide';
+
+        if (goodToGo) {
+          // Re-validate inputs that depend on this one with equalto
+          var dependentElements = this.$element.find('[data-equalto="' + $el.attr('id') + '"]');
+          if (dependentElements.length) {
+            (function () {
+              var _this = _this4;
+              dependentElements.each(function () {
+                if ($(this).val()) {
+                  _this.validateInput($(this));
+                }
+              });
+            })();
+          }
+        }
+
+        this[goodToGo ? 'removeErrorClasses' : 'addErrorClasses']($el);
+
+        /**
+         * Fires when the input is done checking for validation. Event trigger is either `valid.zf.abide` or `invalid.zf.abide`
+         * Trigger includes the DOM element of the input.
+         * @event Abide#valid
+         * @event Abide#invalid
+         */
+        $el.trigger(message, [$el]);
+
+        return goodToGo;
+      }
+
+      /**
+       * Goes through a form and if there are any invalid inputs, it will display the form error element
+       * @returns {Boolean} noError - true if no errors were detected...
+       * @fires Abide#formvalid
+       * @fires Abide#forminvalid
+       */
+
+    }, {
+      key: 'validateForm',
+      value: function validateForm() {
+        var acc = [];
+        var _this = this;
+
+        this.$inputs.each(function () {
+          acc.push(_this.validateInput($(this)));
+        });
+
+        var noError = acc.indexOf(false) === -1;
+
+        this.$element.find('[data-abide-error]').css('display', noError ? 'none' : 'block');
+
+        /**
+         * Fires when the form is finished validating. Event trigger is either `formvalid.zf.abide` or `forminvalid.zf.abide`.
+         * Trigger includes the element of the form.
+         * @event Abide#formvalid
+         * @event Abide#forminvalid
+         */
+        this.$element.trigger((noError ? 'formvalid' : 'forminvalid') + '.zf.abide', [this.$element]);
+
+        return noError;
+      }
+
+      /**
+       * Determines whether or a not a text input is valid based on the pattern specified in the attribute. If no matching pattern is found, returns true.
+       * @param {Object} $el - jQuery object to validate, should be a text input HTML element
+       * @param {String} pattern - string value of one of the RegEx patterns in Abide.options.patterns
+       * @returns {Boolean} Boolean value depends on whether or not the input value matches the pattern specified
+       */
+
+    }, {
+      key: 'validateText',
+      value: function validateText($el, pattern) {
+        // A pattern can be passed to this function, or it will be infered from the input's "pattern" attribute, or it's "type" attribute
+        pattern = pattern || $el.attr('pattern') || $el.attr('type');
+        var inputText = $el.val();
+        var valid = false;
+
+        if (inputText.length) {
+          // If the pattern attribute on the element is in Abide's list of patterns, then test that regexp
+          if (this.options.patterns.hasOwnProperty(pattern)) {
+            valid = this.options.patterns[pattern].test(inputText);
+          }
+          // If the pattern name isn't also the type attribute of the field, then test it as a regexp
+          else if (pattern !== $el.attr('type')) {
+              valid = new RegExp(pattern).test(inputText);
+            } else {
+              valid = true;
+            }
+        }
+        // An empty field is valid if it's not required
+        else if (!$el.prop('required')) {
+            valid = true;
+          }
+
+        return valid;
+      }
+
+      /**
+       * Determines whether or a not a radio input is valid based on whether or not it is required and selected. Although the function targets a single `<input>`, it validates by checking the `required` and `checked` properties of all radio buttons in its group.
+       * @param {String} groupName - A string that specifies the name of a radio button group
+       * @returns {Boolean} Boolean value depends on whether or not at least one radio input has been selected (if it's required)
+       */
+
+    }, {
+      key: 'validateRadio',
+      value: function validateRadio(groupName) {
+        // If at least one radio in the group has the `required` attribute, the group is considered required
+        // Per W3C spec, all radio buttons in a group should have `required`, but we're being nice
+        var $group = this.$element.find(':radio[name="' + groupName + '"]');
+        var valid = false,
+            required = false;
+
+        // For the group to be required, at least one radio needs to be required
+        $group.each(function (i, e) {
+          if ($(e).attr('required')) {
+            required = true;
+          }
+        });
+        if (!required) valid = true;
+
+        if (!valid) {
+          // For the group to be valid, at least one radio needs to be checked
+          $group.each(function (i, e) {
+            if ($(e).prop('checked')) {
+              valid = true;
+            }
+          });
+        };
+
+        return valid;
+      }
+
+      /**
+       * Determines if a selected input passes a custom validation function. Multiple validations can be used, if passed to the element with `data-validator="foo bar baz"` in a space separated listed.
+       * @param {Object} $el - jQuery input element.
+       * @param {String} validators - a string of function names matching functions in the Abide.options.validators object.
+       * @param {Boolean} required - self explanatory?
+       * @returns {Boolean} - true if validations passed.
+       */
+
+    }, {
+      key: 'matchValidation',
+      value: function matchValidation($el, validators, required) {
+        var _this5 = this;
+
+        required = required ? true : false;
+
+        var clear = validators.split(' ').map(function (v) {
+          return _this5.options.validators[v]($el, required, $el.parent());
+        });
+        return clear.indexOf(false) === -1;
+      }
+
+      /**
+       * Resets form inputs and styles
+       * @fires Abide#formreset
+       */
+
+    }, {
+      key: 'resetForm',
+      value: function resetForm() {
+        var $form = this.$element,
+            opts = this.options;
+
+        $('.' + opts.labelErrorClass, $form).not('small').removeClass(opts.labelErrorClass);
+        $('.' + opts.inputErrorClass, $form).not('small').removeClass(opts.inputErrorClass);
+        $(opts.formErrorSelector + '.' + opts.formErrorClass).removeClass(opts.formErrorClass);
+        $form.find('[data-abide-error]').css('display', 'none');
+        $(':input', $form).not(':button, :submit, :reset, :hidden, :radio, :checkbox, [data-abide-ignore]').val('').removeAttr('data-invalid');
+        $(':input:radio', $form).not('[data-abide-ignore]').prop('checked', false).removeAttr('data-invalid');
+        $(':input:checkbox', $form).not('[data-abide-ignore]').prop('checked', false).removeAttr('data-invalid');
+        /**
+         * Fires when the form has been reset.
+         * @event Abide#formreset
+         */
+        $form.trigger('formreset.zf.abide', [$form]);
+      }
+
+      /**
+       * Destroys an instance of Abide.
+       * Removes error styles and classes from elements, without resetting their values.
+       */
+
+    }, {
+      key: 'destroy',
+      value: function destroy() {
+        var _this = this;
+        this.$element.off('.abide').find('[data-abide-error]').css('display', 'none');
+
+        this.$inputs.off('.abide').each(function () {
+          _this.removeErrorClasses($(this));
+        });
+
+        Foundation.unregisterPlugin(this);
+      }
+    }]);
+
+    return Abide;
+  }();
+
+  /**
+   * Default settings for plugin
+   */
+
+
+  Abide.defaults = {
+    /**
+     * The default event to validate inputs. Checkboxes and radios validate immediately.
+     * Remove or change this value for manual validation.
+     * @option
+     * @example 'fieldChange'
+     */
+    validateOn: 'fieldChange',
+
+    /**
+     * Class to be applied to input labels on failed validation.
+     * @option
+     * @example 'is-invalid-label'
+     */
+    labelErrorClass: 'is-invalid-label',
+
+    /**
+     * Class to be applied to inputs on failed validation.
+     * @option
+     * @example 'is-invalid-input'
+     */
+    inputErrorClass: 'is-invalid-input',
+
+    /**
+     * Class selector to use to target Form Errors for show/hide.
+     * @option
+     * @example '.form-error'
+     */
+    formErrorSelector: '.form-error',
+
+    /**
+     * Class added to Form Errors on failed validation.
+     * @option
+     * @example 'is-visible'
+     */
+    formErrorClass: 'is-visible',
+
+    /**
+     * Set to true to validate text inputs on any value change.
+     * @option
+     * @example false
+     */
+    liveValidate: false,
+
+    /**
+     * Set to true to validate inputs on blur.
+     * @option
+     * @example false
+     */
+    validateOnBlur: false,
+
+    patterns: {
+      alpha: /^[a-zA-Z]+$/,
+      alpha_numeric: /^[a-zA-Z0-9]+$/,
+      integer: /^[-+]?\d+$/,
+      number: /^[-+]?\d*(?:[\.\,]\d+)?$/,
+
+      // amex, visa, diners
+      card: /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/,
+      cvv: /^([0-9]){3,4}$/,
+
+      // http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#valid-e-mail-address
+      email: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/,
+
+      url: /^(https?|ftp|file|ssh):\/\/(((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/,
+      // abc.de
+      domain: /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,8}$/,
+
+      datetime: /^([0-2][0-9]{3})\-([0-1][0-9])\-([0-3][0-9])T([0-5][0-9])\:([0-5][0-9])\:([0-5][0-9])(Z|([\-\+]([0-1][0-9])\:00))$/,
+      // YYYY-MM-DD
+      date: /(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))$/,
+      // HH:MM:SS
+      time: /^(0[0-9]|1[0-9]|2[0-3])(:[0-5][0-9]){2}$/,
+      dateISO: /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/,
+      // MM/DD/YYYY
+      month_day_year: /^(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.]\d{4}$/,
+      // DD/MM/YYYY
+      day_month_year: /^(0[1-9]|[12][0-9]|3[01])[- \/.](0[1-9]|1[012])[- \/.]\d{4}$/,
+
+      // #FFF or #FFFFFF
+      color: /^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/
+    },
+
+    /**
+     * Optional validation functions to be used. `equalTo` being the only default included function.
+     * Functions should return only a boolean if the input is valid or not. Functions are given the following arguments:
+     * el : The jQuery element to validate.
+     * required : Boolean value of the required attribute be present or not.
+     * parent : The direct parent of the input.
+     * @option
+     */
+    validators: {
+      equalTo: function (el, required, parent) {
+        return $('#' + el.attr('data-equalto')).val() === el.val();
+      }
+    }
+  };
+
+  // Window exports
+  Foundation.plugin(Abide, 'Abide');
+}(jQuery);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+!function ($) {
+
+  /**
+   * Equalizer module.
+   * @module foundation.equalizer
+   * @requires foundation.util.mediaQuery
+   * @requires foundation.util.timerAndImageLoader if equalizer contains images
+   */
+
+  var Equalizer = function () {
+    /**
+     * Creates a new instance of Equalizer.
+     * @class
+     * @fires Equalizer#init
+     * @param {Object} element - jQuery object to add the trigger to.
+     * @param {Object} options - Overrides to the default plugin settings.
+     */
+    function Equalizer(element, options) {
+      _classCallCheck(this, Equalizer);
+
+      this.$element = element;
+      this.options = $.extend({}, Equalizer.defaults, this.$element.data(), options);
+
+      this._init();
+
+      Foundation.registerPlugin(this, 'Equalizer');
+    }
+
+    /**
+     * Initializes the Equalizer plugin and calls functions to get equalizer functioning on load.
+     * @private
+     */
+
+
+    _createClass(Equalizer, [{
+      key: '_init',
+      value: function _init() {
+        var eqId = this.$element.attr('data-equalizer') || '';
+        var $watched = this.$element.find('[data-equalizer-watch="' + eqId + '"]');
+
+        this.$watched = $watched.length ? $watched : this.$element.find('[data-equalizer-watch]');
+        this.$element.attr('data-resize', eqId || Foundation.GetYoDigits(6, 'eq'));
+        this.$element.attr('data-mutate', eqId || Foundation.GetYoDigits(6, 'eq'));
+
+        this.hasNested = this.$element.find('[data-equalizer]').length > 0;
+        this.isNested = this.$element.parentsUntil(document.body, '[data-equalizer]').length > 0;
+        this.isOn = false;
+        this._bindHandler = {
+          onResizeMeBound: this._onResizeMe.bind(this),
+          onPostEqualizedBound: this._onPostEqualized.bind(this)
+        };
+
+        var imgs = this.$element.find('img');
+        var tooSmall;
+        if (this.options.equalizeOn) {
+          tooSmall = this._checkMQ();
+          $(window).on('changed.zf.mediaquery', this._checkMQ.bind(this));
+        } else {
+          this._events();
+        }
+        if (tooSmall !== undefined && tooSmall === false || tooSmall === undefined) {
+          if (imgs.length) {
+            Foundation.onImagesLoaded(imgs, this._reflow.bind(this));
+          } else {
+            this._reflow();
+          }
+        }
+      }
+
+      /**
+       * Removes event listeners if the breakpoint is too small.
+       * @private
+       */
+
+    }, {
+      key: '_pauseEvents',
+      value: function _pauseEvents() {
+        this.isOn = false;
+        this.$element.off({
+          '.zf.equalizer': this._bindHandler.onPostEqualizedBound,
+          'resizeme.zf.trigger': this._bindHandler.onResizeMeBound,
+          'mutateme.zf.trigger': this._bindHandler.onResizeMeBound
+        });
+      }
+
+      /**
+       * function to handle $elements resizeme.zf.trigger, with bound this on _bindHandler.onResizeMeBound
+       * @private
+       */
+
+    }, {
+      key: '_onResizeMe',
+      value: function _onResizeMe(e) {
+        this._reflow();
+      }
+
+      /**
+       * function to handle $elements postequalized.zf.equalizer, with bound this on _bindHandler.onPostEqualizedBound
+       * @private
+       */
+
+    }, {
+      key: '_onPostEqualized',
+      value: function _onPostEqualized(e) {
+        if (e.target !== this.$element[0]) {
+          this._reflow();
+        }
+      }
+
+      /**
+       * Initializes events for Equalizer.
+       * @private
+       */
+
+    }, {
+      key: '_events',
+      value: function _events() {
+        var _this = this;
+        this._pauseEvents();
+        if (this.hasNested) {
+          this.$element.on('postequalized.zf.equalizer', this._bindHandler.onPostEqualizedBound);
+        } else {
+          this.$element.on('resizeme.zf.trigger', this._bindHandler.onResizeMeBound);
+          this.$element.on('mutateme.zf.trigger', this._bindHandler.onResizeMeBound);
+        }
+        this.isOn = true;
+      }
+
+      /**
+       * Checks the current breakpoint to the minimum required size.
+       * @private
+       */
+
+    }, {
+      key: '_checkMQ',
+      value: function _checkMQ() {
+        var tooSmall = !Foundation.MediaQuery.is(this.options.equalizeOn);
+        if (tooSmall) {
+          if (this.isOn) {
+            this._pauseEvents();
+            this.$watched.css('height', 'auto');
+          }
+        } else {
+          if (!this.isOn) {
+            this._events();
+          }
+        }
+        return tooSmall;
+      }
+
+      /**
+       * A noop version for the plugin
+       * @private
+       */
+
+    }, {
+      key: '_killswitch',
+      value: function _killswitch() {
+        return;
+      }
+
+      /**
+       * Calls necessary functions to update Equalizer upon DOM change
+       * @private
+       */
+
+    }, {
+      key: '_reflow',
+      value: function _reflow() {
+        if (!this.options.equalizeOnStack) {
+          if (this._isStacked()) {
+            this.$watched.css('height', 'auto');
+            return false;
+          }
+        }
+        if (this.options.equalizeByRow) {
+          this.getHeightsByRow(this.applyHeightByRow.bind(this));
+        } else {
+          this.getHeights(this.applyHeight.bind(this));
+        }
+      }
+
+      /**
+       * Manually determines if the first 2 elements are *NOT* stacked.
+       * @private
+       */
+
+    }, {
+      key: '_isStacked',
+      value: function _isStacked() {
+        if (!this.$watched[0] || !this.$watched[1]) {
+          return true;
+        }
+        return this.$watched[0].getBoundingClientRect().top !== this.$watched[1].getBoundingClientRect().top;
+      }
+
+      /**
+       * Finds the outer heights of children contained within an Equalizer parent and returns them in an array
+       * @param {Function} cb - A non-optional callback to return the heights array to.
+       * @returns {Array} heights - An array of heights of children within Equalizer container
+       */
+
+    }, {
+      key: 'getHeights',
+      value: function getHeights(cb) {
+        var heights = [];
+        for (var i = 0, len = this.$watched.length; i < len; i++) {
+          this.$watched[i].style.height = 'auto';
+          heights.push(this.$watched[i].offsetHeight);
+        }
+        cb(heights);
+      }
+
+      /**
+       * Finds the outer heights of children contained within an Equalizer parent and returns them in an array
+       * @param {Function} cb - A non-optional callback to return the heights array to.
+       * @returns {Array} groups - An array of heights of children within Equalizer container grouped by row with element,height and max as last child
+       */
+
+    }, {
+      key: 'getHeightsByRow',
+      value: function getHeightsByRow(cb) {
+        var lastElTopOffset = this.$watched.length ? this.$watched.first().offset().top : 0,
+            groups = [],
+            group = 0;
+        //group by Row
+        groups[group] = [];
+        for (var i = 0, len = this.$watched.length; i < len; i++) {
+          this.$watched[i].style.height = 'auto';
+          //maybe could use this.$watched[i].offsetTop
+          var elOffsetTop = $(this.$watched[i]).offset().top;
+          if (elOffsetTop != lastElTopOffset) {
+            group++;
+            groups[group] = [];
+            lastElTopOffset = elOffsetTop;
+          }
+          groups[group].push([this.$watched[i], this.$watched[i].offsetHeight]);
+        }
+
+        for (var j = 0, ln = groups.length; j < ln; j++) {
+          var heights = $(groups[j]).map(function () {
+            return this[1];
+          }).get();
+          var max = Math.max.apply(null, heights);
+          groups[j].push(max);
+        }
+        cb(groups);
+      }
+
+      /**
+       * Changes the CSS height property of each child in an Equalizer parent to match the tallest
+       * @param {array} heights - An array of heights of children within Equalizer container
+       * @fires Equalizer#preequalized
+       * @fires Equalizer#postequalized
+       */
+
+    }, {
+      key: 'applyHeight',
+      value: function applyHeight(heights) {
+        var max = Math.max.apply(null, heights);
+        /**
+         * Fires before the heights are applied
+         * @event Equalizer#preequalized
+         */
+        this.$element.trigger('preequalized.zf.equalizer');
+
+        this.$watched.css('height', max);
+
+        /**
+         * Fires when the heights have been applied
+         * @event Equalizer#postequalized
+         */
+        this.$element.trigger('postequalized.zf.equalizer');
+      }
+
+      /**
+       * Changes the CSS height property of each child in an Equalizer parent to match the tallest by row
+       * @param {array} groups - An array of heights of children within Equalizer container grouped by row with element,height and max as last child
+       * @fires Equalizer#preequalized
+       * @fires Equalizer#preequalizedrow
+       * @fires Equalizer#postequalizedrow
+       * @fires Equalizer#postequalized
+       */
+
+    }, {
+      key: 'applyHeightByRow',
+      value: function applyHeightByRow(groups) {
+        /**
+         * Fires before the heights are applied
+         */
+        this.$element.trigger('preequalized.zf.equalizer');
+        for (var i = 0, len = groups.length; i < len; i++) {
+          var groupsILength = groups[i].length,
+              max = groups[i][groupsILength - 1];
+          if (groupsILength <= 2) {
+            $(groups[i][0][0]).css({ 'height': 'auto' });
+            continue;
+          }
+          /**
+            * Fires before the heights per row are applied
+            * @event Equalizer#preequalizedrow
+            */
+          this.$element.trigger('preequalizedrow.zf.equalizer');
+          for (var j = 0, lenJ = groupsILength - 1; j < lenJ; j++) {
+            $(groups[i][j][0]).css({ 'height': max });
+          }
+          /**
+            * Fires when the heights per row have been applied
+            * @event Equalizer#postequalizedrow
+            */
+          this.$element.trigger('postequalizedrow.zf.equalizer');
+        }
+        /**
+         * Fires when the heights have been applied
+         */
+        this.$element.trigger('postequalized.zf.equalizer');
+      }
+
+      /**
+       * Destroys an instance of Equalizer.
+       * @function
+       */
+
+    }, {
+      key: 'destroy',
+      value: function destroy() {
+        this._pauseEvents();
+        this.$watched.css('height', 'auto');
+
+        Foundation.unregisterPlugin(this);
+      }
+    }]);
+
+    return Equalizer;
+  }();
+
+  /**
+   * Default settings for plugin
+   */
+
+
+  Equalizer.defaults = {
+    /**
+     * Enable height equalization when stacked on smaller screens.
+     * @option
+     * @example true
+     */
+    equalizeOnStack: false,
+    /**
+     * Enable height equalization row by row.
+     * @option
+     * @example false
+     */
+    equalizeByRow: false,
+    /**
+     * String representing the minimum breakpoint size the plugin should equalize heights on.
+     * @option
+     * @example 'medium'
+     */
+    equalizeOn: ''
+  };
+
+  // Window exports
+  Foundation.plugin(Equalizer, 'Equalizer');
 }(jQuery);

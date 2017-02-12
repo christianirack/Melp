@@ -2,6 +2,7 @@
 /*----------  Importar archivos externos  ----------*/
 /*----------  Colores  ----------*/
 /*----------  Medida de partículas  ----------*/
+/*----------  Particulas del logotipo  ----------*/
 @-webkit-keyframes particula1 {
   0% {
     -webkit-transform: rotate(0deg) translate(0px, 0px);
@@ -69,6 +70,14 @@
     -webkit-transform: translate(0px, 0px) scale(1);
             transform: translate(0px, 0px) scale(1); } }
 
+/*----------  Fondo SVG  ----------*/
+@-webkit-keyframes dash {
+  to {
+    stroke-dashoffset: 0; } }
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0; } }
+
 /*----------  Configuración global  ----------*/
 * {
   margin: 0px;
@@ -79,7 +88,6 @@
 body {
   font-size: 12px; }
 
-/*----------  Logotipo con partículas  ----------*/
 #logotipo {
   width: 200px;
   margin: 40px auto !important;
@@ -94,7 +102,7 @@ body {
   -webkit-animation: entrar 2s ease-in-out;
           animation: entrar 2s ease-in-out; }
 
-/*----------  Importar archivos externos  ----------*/
+/*----------  Partículas  ----------*/
 .particula {
   position: absolute; }
 
@@ -150,7 +158,31 @@ body {
 /*----------  M  ----------*/
 /*----------  XL  ----------*/
 /*----------  XXL  ----------*/
+/*----------  Animaciones  ----------*/
+.svgAbsolute {
+  width: 100%;
+  position: absolute;
+  top: -20px; }
+
 .scrollme {
   width: 200px;
   height: 600px;
   background-color: red; }
+
+.path {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  -webkit-animation: dash 2s ease-in-out forwards;
+          animation: dash 2s ease-in-out forwards;
+  stroke: rgba(0, 0, 0, 0.04); }
+
+.path2 {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  -webkit-animation: dash 2s .2s ease-in-out forwards;
+          animation: dash 2s .2s ease-in-out forwards;
+  stroke: rgba(0, 0, 0, 0.04); }
+
+#organic-blob {
+  display: block !important;
+  margin: 0px auto !important; }

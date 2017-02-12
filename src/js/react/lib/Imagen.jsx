@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 class Imagen extends React.Component {
 	constructor(props){
 		super(props);
@@ -22,16 +21,15 @@ class Imagen extends React.Component {
 		var date = new Date();
 		var cache = date.getTime();
 		return	<div id="logotipo" onClick={this.unclick}>
-			<div className="particula particula1" />
-			<div className="particula particula2" />
-			<div className="particula particula3" />
-			<div className="particula particula4" />
-			<img src={ this.props.src+'?cache='+cache } width={ this.props.width } id="imagen-logo" />
-			<div>{ this.props.name } {this.state.nombre}</div>
-
-		</div>
+					<a href="#foo" id="foo">Link Text</a>
+					<div className="particula particula1" />
+					<div className="particula particula2" />
+					<div className="particula particula3" />
+					<div className="particula particula4" />
+					<img src={ this.props.src+'?cache='+cache } width={ this.props.width } id="imagen-logo" />
+				</div>
 	}
 }
 $(function(){
-	ReactDOM.render(<div><Imagen src="img/logotipo.svg" width="300px" name="Mi nombre"   /></div>, document.getElementById('imgLogo'));
+	ReactDOM.render(<div><Imagen src="img/logotipo.svg" width="300px"    /></div>, document.getElementById('imgLogo'));
 });

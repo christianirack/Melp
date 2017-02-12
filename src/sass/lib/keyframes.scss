@@ -1,3 +1,6 @@
+/*----------  Particulas del logotipo  ----------*/
+
+
 @keyframes particula1{
   0%
   {
@@ -41,5 +44,13 @@
  	opacity:1;
   transform: translate(0px,0px) scale(1);
 
+  }
+}
+
+/*----------  Fondo SVG  ----------*/
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
   }
 }
