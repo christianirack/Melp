@@ -21810,18 +21810,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /*----------  Json  ----------*/
 
-var datos = [{ id: 1, name: 'hola' }, { id: 2, name: 'hola' }, { id: 3, name: 'hola' }, { id: 4, name: 'hola' }];
-var urlRequest = 'http://s3-us-west-2.amazonaws.com/lgoveabucket/data_melp.json';
-$.getJSON(urlRequest, function (data) {
-	console.log(data);
-	/*
-  var items = [];
-  $.each( data, function( key, val ) {
-    //items.push( "<li id='" + key + "'>" + val + "</li>" );
-    console.log('ok')
-  });
-  */
-});
+var data = [];
+function json() {
+	var urlRequest = './json.php?url=http://s3-us-west-2.amazonaws.com/lgoveabucket/data_melp.json';
+	$.getJSON(urlRequest, function (dataCallback) {
+		data = dataCallback;
+		//console.log(data.length);
+		$.each(dataCallback, function (key, val) {
+			console.log(key, val);
+		});
+		renderear();
+	});
+}
 
 /*----------  Class  ----------*/
 
@@ -21846,15 +21846,22 @@ var Ficha = function (_React$Component) {
 	}, {
 		key: 'render',
 		value: function render() {
+			var _this2 = this;
+
 			return _react2.default.createElement(
 				'div',
 				null,
-				datos.map(function (datos) {
+				'----------------------> ',
+				window.data,
+				data.map(function (data) {
 					return _react2.default.createElement(
 						'h1',
-						{ key: datos.id },
+						{ key: data.id },
 						'asi es ',
-						datos.id
+						data.name,
+						' ',
+						_this2.state.default,
+						' '
 					);
 				})
 			);
@@ -21864,8 +21871,11 @@ var Ficha = function (_React$Component) {
 	return Ficha;
 }(_react2.default.Component);
 
-$(function () {
+function renderear() {
 	_reactDom2.default.render(_react2.default.createElement(Ficha, null), document.getElementById('fichas'));
+}
+$(function () {
+	json();
 });
 
 /***/ })

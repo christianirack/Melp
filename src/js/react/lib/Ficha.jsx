@@ -3,31 +3,25 @@ import ReactDOM from 'react-dom';
 
 /*----------  Json  ----------*/
 
-var datos = [
-	{id:1, name:'hola'},
-	{id:2, name:'hola'},
-	{id:3, name:'hola'},
-	{id:4, name:'hola'},
-];
-var urlRequest = 'http://s3-us-west-2.amazonaws.com/lgoveabucket/data_melp.json';
-$.getJSON(urlRequest, function( data ) {
-	console.log(data);
-	/*
-  var items = [];
-  $.each( data, function( key, val ) {
-    //items.push( "<li id='" + key + "'>" + val + "</li>" );
-    console.log('ok')
-  });
-  */
-});
-
-
-
-
+var data = [];
+function json(){
+	var urlRequest = './json.php?url=http://s3-us-west-2.amazonaws.com/lgoveabucket/data_melp.json';
+	$.getJSON(urlRequest, function( dataCallback ) {
+		data = dataCallback;
+		//console.log(data.length);
+		$.each( dataCallback, function( key, val ) {
+	    	console.log(key, val);
+	  	});
+		renderear();
+	});
+}
 
 /*----------  Class  ----------*/
 
 class Ficha extends React.Component{
+
+
+
 	constructor (props){
 		super(props);
 		this.state={default:''};
@@ -40,14 +34,17 @@ class Ficha extends React.Component{
 	}
 	render(){
 		return <div>
-		{
-			datos.map((datos)=>{
-				return <h1 key={datos.id}>asi es {datos.id}</h1>
+		----------------------> {window.data}
+			{ 
+			data.map((data) =>{
+				return <h1 key={data.id}>asi es {data.name} {this.state.default} </h1>
 			})
-		}
-		</div>
+			}</div>
 	}
 }
-$(function(){
+function renderear(){
 	ReactDOM.render(<Ficha />, document.getElementById('fichas'));
+}
+$(function(){
+	json();
 })
