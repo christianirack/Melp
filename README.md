@@ -1,5 +1,5 @@
 
-# Melp - propuesta frontend #
+# Melp - Propuesta frontend #
 ##Estas son algunas características (detrás de camara) del desarrollo de Melp implementadas en la programación Front-end##
 
 ```sh
@@ -25,6 +25,5 @@ Uso de NPM y Node para compilaciones y manejo de errores
 Uso de servidor web Apache bajo un contenedor de Docker
 
 ```
-
 # Link #
 [christianirack.github.io/Melp](https://christianirack.github.io/Melp/)
