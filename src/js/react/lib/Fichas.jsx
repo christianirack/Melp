@@ -8,8 +8,8 @@ var mobile = false;
 var imgRandom;
 var keys = [];
 function json(){
-
-	var urlRequest = './json.php?url=http://s3-us-west-2.amazonaws.com/lgoveabucket/data_melp.json';
+	//http://irack.mx/websites/melp/json.php
+	var urlRequest = './data.json';
 	$.getJSON(urlRequest, function( dataCallback ) {
 		$.each( dataCallback, function( key, val ) {
 			if (isMobile.any()) {
