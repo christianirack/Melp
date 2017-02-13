@@ -4,7 +4,7 @@
   "description": "Plataforma Web",
   "main": "index.js",
   "scripts": {
-    "w": "clear && figlet Webpack Run && webpack --progress --watch",
+    "w": "clear && figlet Webpack Run && webpack --watch",
     "g": "clear && figlet Gulper Run && gulper default"
   },
   "repository": {
@@ -38,5 +38,6 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "webpack": "^2.2.1"
-  }
+  },
+  "dependencies": {}
 }

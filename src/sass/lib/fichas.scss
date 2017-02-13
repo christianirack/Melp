@@ -1,0 +1,56 @@
+/*
+#fichas{
+	display:relative;
+	z-index: 100;
+}
+.espaciado{
+		padding: 50px;
+}
+
+.nombre{
+	font-size: 2.5em;
+	background-color:rgba(0,0,0,.2);
+	font-family: 'Catamaran', sans-serif !important;
+	font-weight: 200;
+	padding:20px;
+}
+.rating{
+		opacity: .4;
+		padding:20px;
+		text-align: right;
+}
+*/
+
+.contenido-ficha{
+	background-color: rgba(0,0,0,.1);
+	.fakeimg{
+		width: 100%;
+	}
+	h1{
+		font-size:2em;
+		padding-top: 40px;
+	}
+	h2{
+		font-size:1.4em;
+	}
+}
+.map{
+	width: 80px;
+	height: 80px;
+	background-color:red;
+}
+.informacionFicha{
+	position:relative;
+	color:$morado !important;
+}
+.mapaPreview{
+	border-radius: 50%;
+	width:100px;
+	height:100px;
+	position: absolute;
+	top: -80px;
+	right:10px;
+}
+.rating i:nth-child(1), .rating i:nth-child(2), .rating i:nth-child(3){
+	color: $moradoClaro !important;
+}

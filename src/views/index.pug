@@ -19,16 +19,18 @@ html(lang="en")
 	body
 		include lib/organic.html
 		//Comienzo del sitio web
-		main.row.expanded
+		main
 			//Logo y menú
-			header.colums.small-12
+			div
 					//Navegación 
-					nav.row.expanded
-						div.columns.small-12#imgLogo
-						div.colums.small-12 
-		section.row.expanded#fichas
+					div
+						div#imgLogo
+						div
+			//Fichas de información
+			div
+				div.row.expanded#fichas
 		//Pie de página
-		footer.row.expanded
+		div.row.expanded
 		include lib/svg.html
 
 

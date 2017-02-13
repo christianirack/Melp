@@ -12,9 +12,12 @@ fs = require("fs"),
 obf = require('gulp-javascriptobfuscator'),
 run = require('gulp-run');
 
+/*----------  Modo de compilación  ----------*/
+
 
 process.env.NODE_ENV = 'development'
 const MODE = process.env.NODE_ENV;
+
 /*----------  Play time  ----------*/
 
 var  asciiArt = fs.readFileSync('./maintainer.txt', 'utf8')
@@ -32,14 +35,18 @@ function errores(err){
 
 /*----------  Archivos JS & CSSS por secuencia  ----------*/
 
-const jsFiles = ['lib/jquery-3.1.1.js',
+const jsFiles = ['lib/isMobile.js',
+                'lib/jquery-3.1.1.js',
                 'lib/TimelineMax.min.js',
                 'lib/what-input.js',
                 'lib/foundation.js',
+                'lib/mapa.js',
+                'lib/font-awesome.js',
                 'react.js',
                 'app.js'];
 
 const cssFiles = ['lib/foundation.css',
+                  'lib/fonts.css',
                   'app.css'];
 
 /*----------  Ruta de archivos compilados  ----------*/
@@ -172,20 +179,16 @@ gulp.task('concatjs', ()=>
   }
 );
 
-
 /*----------  Vigilar SRC ----------*/
 
 gulp.task('default',['views','sass','concatcss','concatjs'], ()=> {
   gulp.watch([sassSrc+'**/*.scss'],['sass'])
   gulp.watch([cssSrc+'**/*.css'],['concatcss'])
 	gulp.watch([jsSrc+'**/*.js'],['concatjs'])
-  gulp.watch([pugSrc+'*.pug'],['views'])
-  //
+  gulp.watch([pugSrc+'/**/*.pug',pugSrc+'/**/*.html'],['views'])
 })
 
 /*----------  Modo de compilación alerta  ----------*/
-
-
 function gulpFiles(){
    var cmd = new run.Command("clear && figlet Mode: "+MODE);
     cmd.exec();

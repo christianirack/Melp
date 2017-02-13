@@ -1,10 +1,14 @@
 /*----------  Animaciones  ----------*/
 
-
+.contSvg{
+	position: absolute; top:0px; left: 0px; width: 100%; height: 100%;
+	overflow:hidden;
+	z-index: -1;
+}
 .svgAbsolute{
 	width:100%;
 	position:absolute;
-	top:-20px;
+	top:-40px;
 }
 .scrollme{
 	width:200px;
@@ -12,10 +16,10 @@
 	background-color: red;
 }
 .path {
-   stroke-dasharray: 2000;
+  stroke-dasharray: 2000;
   stroke-dashoffset: 2000;
   animation: dash 2s ease-in-out forwards;
-   stroke:$grisClaroR1;
+  stroke:$grisClaroR1;
 }
 .path2 {
    stroke-dasharray: 2000;
@@ -26,4 +30,9 @@
 #organic-blob{
 	display: block !important;
 	margin: 0px auto !important;
+}
+.disable {
+  pointer-events: none;
+  touch-callout: none;
+  user-select: none; 
 }

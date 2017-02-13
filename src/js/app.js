@@ -1,25 +1,7 @@
-var isMobile = {
-    Android: function() {
-        return navigator.userAgent.match(/Android/i);
-    },
-    BlackBerry: function() {
-        return navigator.userAgent.match(/BlackBerry/i);
-    },
-    iOS: function() {
-        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-    },
-    Opera: function() {
-        return navigator.userAgent.match(/Opera Mini/i);
-    },
-    Windows: function() {
-        return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
-    },
-    any: function() {
-        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-    }
-};
 
 $(function(){
+    //key  AIzaSyAKlZh-yaEKVySjN3g9hb94PF-I-7xroFU
+    $('head').append('<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKlZh-yaEKVySjN3g9hb94PF-I-7xroFU&callback=initMap">');
     if (isMobile.any()) {
        $('#organic-blob').remove();
      }else{
@@ -28,3 +10,7 @@ $(function(){
 	$(document).foundation();
 
 })
+
+function initMap(){
+    console.log('mapa listo');
+}

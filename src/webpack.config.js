@@ -2,9 +2,6 @@
 const webpack = require('webpack');
 var path = require('path');
 var src = path.resolve(__dirname, 'js/react');
-
-
-
 const config = {
   entry: src+'/Main.jsx',
   output: {
@@ -23,9 +20,10 @@ const config = {
   }
 };
 
+module.exports = config;
+
 /*
-,
-  plugins:[
+plugins:[
     new webpack.DefinePlugin({
       'process.env':{
         'NODE_ENV': JSON.stringify('production')
@@ -33,11 +31,8 @@ const config = {
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress:{
-        warnings: true
+        warnings: false
       }
     })
   ]
-*/
-
-
-module.exports = config;
+  */
