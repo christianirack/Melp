@@ -66,7 +66,7 @@ class Ficha extends React.Component{
 									<i className={"fa fa-star fa-2x star"+this.props.rating} aria-hidden="true"></i>
 									<i className={"fa fa-star fa-2x star"+this.props.rating} aria-hidden="true"></i>
 								</div>
-								<span>{this.props.street}</span>, <span>{this.props.city}</span>.<br/>
+								<span>{this.props.street}</span>, <span>{this.props.state}</span>.<br/>
 								<a href={this.props.site} target="_blank"><span>{this.props.site} </span></a>
 									<div className="iconos-contacto">
 										<a href={"mailto:"+this.props.email}><i className="fa fa-envelope fa-2x" aria-hidden="true"></i></a>

@@ -165,8 +165,6 @@ body {
   .espaciado :hover .mapaPreview {
     -webkit-transform: scale(1.2) translateX(-20px);
             transform: scale(1.2) translateX(-20px); }
-  .fakeimg {
-    height: 250px; }
   .iconos-contacto i {
     font-size: 3em !important;
     padding-right: 30px !important; } }
@@ -180,8 +178,6 @@ body {
   .espaciado :hover .mapaPreview {
     -webkit-transform: scale(1.4) translateY(-20px);
             transform: scale(1.4) translateY(-20px); }
-  .fakeimg {
-    height: 300px; }
   .iconos-contacto i {
     font-size: 2em !important;
     padding-right: 10px !important; } }
@@ -195,8 +191,6 @@ body {
   .espaciado :hover .mapaPreview {
     -webkit-transform: scale(1.4) translateY(-20px);
             transform: scale(1.4) translateY(-20px); }
-  .fakeimg {
-    height: 300px; }
   .iconos-contacto i {
     font-size: 2em !important;
     padding-right: 10px !important; } }
@@ -210,8 +204,6 @@ body {
   .espaciado :hover .mapaPreview {
     -webkit-transform: scale(1.4) translateY(-20px);
             transform: scale(1.4) translateY(-20px); }
-  .fakeimg {
-    height: 300px; }
   .iconos-contacto i {
     font-size: 2em !important;
     padding-right: 10px !important; } }

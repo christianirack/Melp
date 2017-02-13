@@ -9161,7 +9161,7 @@ var imgRandom;
 var keys = [];
 function json() {
 	//http://irack.mx/websites/melp/json.php
-	var urlRequest = 'data.json';
+	var urlRequest = './data.json';
 	$.getJSON(urlRequest, function (dataCallback) {
 		$.each(dataCallback, function (key, val) {
 			if (isMobile.any()) {
@@ -9502,7 +9502,7 @@ var Ficha = function (_React$Component) {
 							_react2.default.createElement(
 								'span',
 								null,
-								this.props.city
+								this.props.state
 							),
 							'.',
 							_react2.default.createElement('br', null),
