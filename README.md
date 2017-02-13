@@ -6,6 +6,7 @@
 Vistas y maquetado desde cero, sin templates
 API Rest json para desplegar la vista principal
 Sitio web responsivo con media queries y sistema de rejillas de Foundation 6
+Diseño de logotipo emulado
 Diseño de vistas en React.js
 Uso de Webpack con Babel
 Uso de Gulp para procesos automatizados y compilaciones
