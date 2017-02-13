@@ -13,7 +13,7 @@ Uso de Gulp para procesos automatizados y compilaciones
 Implementación de SASS con autoprefijos
 Implementación del motor de templates Pug para el maquetado principal
 Uso de SVG para efectos en pantalla
-Animaciones y partículas en CSS3
+Animaciones y partículas orgánicas en CSS3
 Implementación de Foundation6 con Flexbox
 Implementación del API de Google Maps con las coordenadas reales de cada ficha
 Uso de iconografía de Awesome
