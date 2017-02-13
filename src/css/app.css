@@ -158,6 +158,10 @@ body {
 
 /*----------  s  ----------*/
 /*----------  M  ----------*/
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  .contenido-ficha {
+    min-height: 470px; } }
+
 /*----------  XL  ----------*/
 /*----------  XXL  ----------*/
 /*----------  Animaciones  ----------*/
@@ -211,9 +215,7 @@ body {
 	display:relative;
 	z-index: 100;
 }
-.espaciado{
-		padding: 50px;
-}
+
 
 .nombre{
 	font-size: 2.5em;
@@ -228,15 +230,45 @@ body {
 		text-align: right;
 }
 */
+.espaciado :hover {
+  background-color: white;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out; }
+
+.espaciado :hover .fakeimg {
+  border: 20px solid rgba(0, 0, 0, 0.04);
+  -webkit-filter: brightness(3);
+          filter: brightness(3); }
+
 .contenido-ficha {
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+  border-bottom: 2em solid rgba(0, 0, 0, 0.04);
+  margin-bottom: 20px;
   background-color: rgba(0, 0, 0, 0.1); }
   .contenido-ficha .fakeimg {
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+    border: 0px solid rgba(0, 0, 0, 0.04);
     width: 100%; }
   .contenido-ficha h1 {
     font-size: 2em;
-    padding-top: 40px; }
+    padding-top: 40px;
+    color: #073f88; }
   .contenido-ficha h2 {
     font-size: 1.4em; }
+  .contenido-ficha .iconos-contacto {
+    text-align: right !important;
+    background-image: url(../img/detalle.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: auto 90%; }
+  .contenido-ficha .iconos-contacto i {
+    padding-right: 10px !important;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 2em !important;
+    color: rgba(0, 0, 0, 0.4); }
 
 .map {
   width: 80px;
@@ -245,7 +277,8 @@ body {
 
 .informacionFicha {
   position: relative;
-  color: #524677 !important; }
+  color: #524677 !important;
+  padding-left: 20px; }
 
 .mapaPreview {
   border-radius: 50%;
@@ -255,5 +288,20 @@ body {
   top: -80px;
   right: 10px; }
 
-.rating i:nth-child(1), .rating i:nth-child(2), .rating i:nth-child(3) {
+.rating {
+  display: block !important; }
+
+.star1 {
+  color: #d054f2 !important; }
+
+.star2 {
+  color: #d054f2 !important; }
+
+.star3 {
+  color: #d054f2 !important; }
+
+.star4 {
+  color: #d054f2 !important; }
+
+.star5 {
   color: #d054f2 !important; }

@@ -3,9 +3,7 @@
 	display:relative;
 	z-index: 100;
 }
-.espaciado{
-		padding: 50px;
-}
+
 
 .nombre{
 	font-size: 2.5em;
@@ -20,19 +18,53 @@
 		text-align: right;
 }
 */
+.espaciado{
+	:hover{
+		background-color:rgba(255,255,255,1);
+		transition: all .4s ease-in-out;
+	}
+	:hover .fakeimg{
+		border:20px solid $grisClaroR1;
+		filter: brightness(3);
+	 }
 
+}
 .contenido-ficha{
+	transition: all .4s ease-in-out;
+
+	border-bottom: 2em solid $grisClaroR1;
+	margin-bottom: 20px;
+
 	background-color: rgba(0,0,0,.1);
+
 	.fakeimg{
+		transition: all .4s ease-in-out;
+		border:0px solid $grisClaroR1;
 		width: 100%;
 	}
 	h1{
 		font-size:2em;
 		padding-top: 40px;
+		color: #073f88;
 	}
 	h2{
 		font-size:1.4em;
 	}
+	.iconos-contacto{
+		text-align:right !important;
+		background-image: url(../img/detalle.png);
+		background-repeat: no-repeat;
+		background-position: bottom right;
+		background-size: auto 90%;
+	}
+	.iconos-contacto i{
+		padding-right: 10px !important;
+		padding-top:20px;
+		padding-bottom:20px;
+		font-size: 2em !important;
+		color:$grisClaroR2;
+	}
+
 }
 .map{
 	width: 80px;
@@ -42,6 +74,7 @@
 .informacionFicha{
 	position:relative;
 	color:$morado !important;
+	padding-left: 20px;
 }
 .mapaPreview{
 	border-radius: 50%;
@@ -51,6 +84,12 @@
 	top: -80px;
 	right:10px;
 }
-.rating i:nth-child(1), .rating i:nth-child(2), .rating i:nth-child(3){
-	color: $moradoClaro !important;
+.rating{
+	display: block !important;
+}
+
+@for $i from 1 through 5 {
+    .star#{$i} {
+       color: $moradoClaro !important;
+    }
 }

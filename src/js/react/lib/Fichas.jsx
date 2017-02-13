@@ -13,7 +13,7 @@ function json(){
 	$.getJSON(urlRequest, function( dataCallback ) {
 		$.each( dataCallback, function( key, val ) {
 			if (isMobile.any()) {
-				imgRandom = 'https://placeimg.com/250/50/nature?cache='+Math.random();
+				imgRandom = 'https://placeimg.com/250/90/nature?cache='+Math.random();
 			}else{
 				imgRandom = 'https://placeimg.com/400/300/nature?cache='+Math.random();
 			}
@@ -35,7 +35,7 @@ class Fichas extends React.Component{
 		
 		return <div className="row expanded">
 				<div className="columns small-12 medium-8">
-					<div className="row expanded">
+					<div className="row expanded"  data-equalizer>
 			{ 
 				keys.map((keys) =>{
 					//return <Ficha key={keys.key} name={keys.object.address.location.lat} />
@@ -47,6 +47,7 @@ class Fichas extends React.Component{
 					<div className="row expanded">
 						<div className="columns small-12">
 						Tiendas mejor rankeadas!
+						<img src="img/banner.jpg" />
 						</div>
 					</div>
 				</div>

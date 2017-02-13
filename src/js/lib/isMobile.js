@@ -1,5 +1,6 @@
 window.timeLoad = 100;
 window.delay = 1200;
+window.global = 1;
 var isMobile = {
     Android: function() {
         return navigator.userAgent.match(/Android/i);

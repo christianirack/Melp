@@ -9487,7 +9487,7 @@ function json() {
 	$.getJSON(urlRequest, function (dataCallback) {
 		$.each(dataCallback, function (key, val) {
 			if (isMobile.any()) {
-				imgRandom = 'https://placeimg.com/250/50/nature?cache=' + Math.random();
+				imgRandom = 'https://placeimg.com/250/90/nature?cache=' + Math.random();
 			} else {
 				imgRandom = 'https://placeimg.com/400/300/nature?cache=' + Math.random();
 			}
@@ -9523,7 +9523,7 @@ var Fichas = function (_React$Component) {
 					{ className: 'columns small-12 medium-8' },
 					_react2.default.createElement(
 						'div',
-						{ className: 'row expanded' },
+						{ className: 'row expanded', 'data-equalizer': true },
 						keys.map(function (keys) {
 							//return <Ficha key={keys.key} name={keys.object.address.location.lat} />
 							return _react2.default.createElement(_Ficha2.default, { key: keys.key, idmap: "mapa" + keys.key, img: keys.img, name: keys.object.name, email: keys.object.contact.email, site: keys.object.contact.site, phone: keys.object.contact.phone, state: keys.object.address.state, street: keys.object.address.street, city: keys.object.address.city, lat: keys.object.address.location.lat, lng: keys.object.address.location.lng, rating: keys.object.rating });
@@ -9540,7 +9540,8 @@ var Fichas = function (_React$Component) {
 						_react2.default.createElement(
 							'div',
 							{ className: 'columns small-12' },
-							'Tiendas mejor rankeadas!'
+							'Tiendas mejor rankeadas!',
+							_react2.default.createElement('img', { src: 'img/banner.jpg' })
 						)
 					)
 				)
@@ -9683,6 +9684,13 @@ var Ficha = function (_React$Component) {
 		_classCallCheck(this, Ficha);
 
 		return _possibleConstructorReturn(this, (Ficha.__proto__ || Object.getPrototypeOf(Ficha)).call(this, props));
+		/*
+  this.state = { ecualizar:'data-equalizer' }
+  if(window.global==1){
+  	this.setState({ ecualizar:'data-equalizer' });
+  	window.global++;
+  	}
+  */
 	}
 
 	_createClass(Ficha, [{
@@ -9717,34 +9725,11 @@ var Ficha = function (_React$Component) {
 						_react2.default.createElement('img', { className: 'fakeimg', src: this.props.img }),
 						_react2.default.createElement(
 							'div',
-							{ className: 'informacionFicha' },
+							{ className: 'informacionFicha', 'data-equalizer-watch': true },
 							_react2.default.createElement(
 								'h1',
 								{ className: 'nombre fuente1' },
 								this.props.name
-							),
-							_react2.default.createElement('i', { className: 'fa fa-envelope fa-2x', 'aria-hidden': 'true', 'data-link': "mailto:" + this.props.email }),
-							_react2.default.createElement('i', { className: 'fa fa-external-link fa-2x', 'aria-hidden': 'true', 'data-link': this.props.site }),
-							_react2.default.createElement('i', { className: 'fa fa-whatsapp fa-2x', 'aria-hidden': 'true', 'data-link': this.props.phone }),
-							_react2.default.createElement(
-								'h2',
-								null,
-								'Direcci\xF3n'
-							),
-							_react2.default.createElement(
-								'span',
-								null,
-								this.props.street
-							),
-							_react2.default.createElement(
-								'span',
-								null,
-								this.props.city
-							),
-							_react2.default.createElement(
-								'span',
-								null,
-								this.props.rating
 							),
 							_react2.default.createElement(
 								'div',
@@ -9754,6 +9739,25 @@ var Ficha = function (_React$Component) {
 								_react2.default.createElement('i', { className: "fa fa-star fa-2x star" + this.props.rating, 'aria-hidden': 'true' }),
 								_react2.default.createElement('i', { className: "fa fa-star fa-2x star" + this.props.rating, 'aria-hidden': 'true' }),
 								_react2.default.createElement('i', { className: "fa fa-star fa-2x star" + this.props.rating, 'aria-hidden': 'true' })
+							),
+							_react2.default.createElement(
+								'span',
+								null,
+								this.props.street
+							),
+							', ',
+							_react2.default.createElement(
+								'span',
+								null,
+								this.props.city
+							),
+							'.',
+							_react2.default.createElement(
+								'div',
+								{ className: 'iconos-contacto' },
+								_react2.default.createElement('i', { className: 'fa fa-envelope fa-2x', 'aria-hidden': 'true', 'data-link': "mailto:" + this.props.email }),
+								_react2.default.createElement('i', { className: 'fa fa-external-link fa-2x', 'aria-hidden': 'true', 'data-link': this.props.site }),
+								_react2.default.createElement('i', { className: 'fa fa-whatsapp fa-2x', 'aria-hidden': 'true', 'data-link': this.props.phone })
 							),
 							_react2.default.createElement('img', { className: 'mapaPreview ra', width: '150', src: "https://maps.googleapis.com/maps/api/staticmap?center=" + this.props.lat + "," + this.props.lng + "&zoom=14&scale=1&size=150x150&maptype=terrain&format=png&visual_refresh=true&&key=AIzaSyAKlZh-yaEKVySjN3g9hb94PF-I-7xroFU", alt: 'Google Map of Albany, NY' })
 						)

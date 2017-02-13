@@ -4,7 +4,14 @@ import ReactDOM from 'react-dom';
 class Ficha extends React.Component{
 	constructor (props){
 		super(props);
+		/*
+		this.state = { ecualizar:'data-equalizer' }
+		if(window.global==1){
+			this.setState({ ecualizar:'data-equalizer' });
+			window.global++;
 
+		}
+		*/
 	}
 	componentDidMount(){
 		//setMap(id,info); 
@@ -24,7 +31,7 @@ class Ficha extends React.Component{
 	}
 	render(){
 		return (
-				<div className="columns small-12 medium-6 large-4 xlarge-3">
+				<div className="columns small-12 medium-6 large-4 xlarge-3" >
 					<div className="espaciado">
 						<div className="contenido-ficha">
 
@@ -34,23 +41,8 @@ class Ficha extends React.Component{
 
 							{/*----------  Info Ficha  ----------*/}
 							
-							<div className="informacionFicha">
+							<div className="informacionFicha" data-equalizer-watch>
 								<h1 className="nombre fuente1">{this.props.name}</h1>
-								
-									<i className="fa fa-envelope fa-2x" aria-hidden="true" data-link={"mailto:"+this.props.email}></i>
-									<i className="fa fa-external-link fa-2x" aria-hidden="true" data-link={this.props.site}></i>
-									<i className="fa fa-whatsapp fa-2x" aria-hidden="true" data-link={this.props.phone}></i>
-
-								<h2>Dirección</h2>
-									<span>{this.props.street}</span>
-									<span>{this.props.city}</span>
-									{/* 
-										<span>LAT LANG</span>
-											<span>{this.props.lat}</span>
-											<span>{this.props.lng}</span>
-										<div id={this.props.idmap} className="map">es</div>
-									*/}
-								<span>{this.props.rating}</span>
 								<div className="rating">
 									<i className={"fa fa-star fa-2x star"+this.props.rating} aria-hidden="true"></i>
 									<i className={"fa fa-star fa-2x star"+this.props.rating} aria-hidden="true"></i>
@@ -58,6 +50,18 @@ class Ficha extends React.Component{
 									<i className={"fa fa-star fa-2x star"+this.props.rating} aria-hidden="true"></i>
 									<i className={"fa fa-star fa-2x star"+this.props.rating} aria-hidden="true"></i>
 								</div>
+								<span>{this.props.street}</span>, <span>{this.props.city}</span>.
+									<div className="iconos-contacto">
+										<i className="fa fa-envelope fa-2x" aria-hidden="true" data-link={"mailto:"+this.props.email}></i>
+										<i className="fa fa-external-link fa-2x" aria-hidden="true" data-link={this.props.site}></i>
+										<i className="fa fa-whatsapp fa-2x" aria-hidden="true" data-link={this.props.phone}></i>
+									</div>
+									{/* 
+										<span>LAT LANG</span>
+											<span>{this.props.lat}</span>
+											<span>{this.props.lng}</span>
+										<div id={this.props.idmap} className="map">es</div>
+									*/}
 								<img className="mapaPreview ra"  width="150" src={"https://maps.googleapis.com/maps/api/staticmap?center="+this.props.lat+","+this.props.lng+"&zoom=14&scale=1&size=150x150&maptype=terrain&format=png&visual_refresh=true&&key=AIzaSyAKlZh-yaEKVySjN3g9hb94PF-I-7xroFU"} alt="Google Map of Albany, NY" />
 							</div>
 						</div>
