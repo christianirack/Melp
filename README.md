@@ -21,6 +21,7 @@ Uso de jQuery 3
 Uso de recursos externos para mostrar imágenes random
 Código de producción limpio, minificado y cifrado de JS
 Uso de Git para documentar la historia
+Código JS documentado
 Publicación en Git Pages
 Uso de NPM y Node para compilaciones y manejo de errores
 Despliegues en local bajo un servidor Apache Dockerizado
