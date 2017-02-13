@@ -1,7 +1,7 @@
 
 # Melp - Propuesta frontend #
 ##Estas son algunas características (detrás de cámaras) del desarrollo de Melp implementadas en la programación Front-end##
-
+***
 ```sh
 
 API Rest json para desplegar la vista principal
@@ -25,6 +25,9 @@ Uso de NPM y Node para compilaciones y manejo de errores
 Uso de servidor web Apache bajo un contenedor de Docker
 
 ```
-#Github Page# ##[christianirack.github.io/Melp/](https://christianirack.github.io/Melp/)##
+#Github Page# 
+##[christianirack.github.io/Melp/](https://christianirack.github.io/Melp/)##
+
+***
 
 ![alt tag](http://irack.mx/websites/melp/landing.png)
