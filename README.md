@@ -27,11 +27,11 @@ Uso de NPM y Node para compilaciones y manejo de errores
 Despliegues en local bajo un servidor Apache Dockerizado
 
 ```
-#Github Page# 
-##[christianirack.github.io/Melp/](https://christianirack.github.io/Melp/)##
+# Github Page #
+## [christianirack.github.io/Melp/](https://christianirack.github.io/Melp/) ##
 
 ***
 
 ![alt tag](http://irack.mx/websites/melp/landing.png)
 
-####[Contacto](http://irack.mx/cv.pdf)####
+#### [Contacto](http://irack.mx/cv.pdf) ####
