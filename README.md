@@ -3,8 +3,8 @@
 ##Estas son algunas características (detrás de cámaras) del desarrollo de Melp implementadas en la programación frontend##
 ***
 ```sh
-Vistas y maquetado desde cero, sin templates
-Ajax para desplegar la vista principal 
+Vistas y maquetado desde cero sin templates
+Ajax para leer data json y desplegar la vista principal 
 Sitio web responsivo con media queries y sistema de rejillas de Foundation 6
 Diseño de logotipo emulado
 Diseño de vistas en React.js
