@@ -28,4 +28,5 @@ Uso de servidor web Apache bajo un contenedor de Docker
 # Link #
 [christianirack.github.io/Melp](https://christianirack.github.io/Melp/)
 
-[[http://irack.mx/websites/melp/landing.png|alt=Melp]]
+
+![alt tag](http://irack.mx/websites/melp/landing.png)
