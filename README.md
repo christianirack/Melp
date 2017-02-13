@@ -1,6 +1,6 @@
 
 # Melp - Propuesta frontend (proyecto piloto) #
-##Estas son algunas características (detrás de cámaras) del desarrollo de Melp implementadas en la programación Front-end##
+##Estas son algunas características (detrás de cámaras) del desarrollo de Melp implementadas en la programación frontend##
 ***
 ```sh
 
