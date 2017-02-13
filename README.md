@@ -5,7 +5,7 @@
 ```sh
 Vistas y maquetado desde cero sin templates
 Ajax para leer data json y desplegar la vista principal 
-Sitio web responsivo con media queries y sistema de rejillas de Foundation 6
+Sitio web responsivo con media queries y sistema de rejillas
 Diseño de logotipo emulado
 Diseño de vistas en React.js
 Uso de Webpack con Babel
