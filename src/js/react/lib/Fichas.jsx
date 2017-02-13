@@ -15,13 +15,14 @@ function json(){
 			if (isMobile.any()) {
 				imgRandom = 'https://placeimg.com/250/90/nature?cache='+Math.random();
 			}else{
-				imgRandom = 'https://placeimg.com/400/300/nature?cache='+Math.random();
+				imgRandom = 'https://placeimg.com/300/300/nature?cache='+Math.random();
 			}
 			keys.push({'key':key,'img':imgRandom,'object':val})
 	  	});
 		renderear();
 	});
 }
+
 
 /*----------  Generar Fichas  ----------*/
 
@@ -34,7 +35,7 @@ class Fichas extends React.Component{
 	render(){
 		
 		return <div className="row expanded">
-				<div className="columns small-12 medium-8">
+				<div className="columns small-12 medium-8 small-order-2">
 					<div className="row expanded"  data-equalizer>
 			{ 
 				keys.map((keys) =>{
@@ -43,11 +44,45 @@ class Fichas extends React.Component{
 				})
 			}		</div>
 				</div>
-				<div className="columns small-12 medium-4">
+
+				<div className="columns small-12 medium-4 small-order-1">
 					<div className="row expanded">
 						<div className="columns small-12">
-						Tiendas mejor rankeadas!
-						<img src="img/banner.jpg" />
+							<div className="row">
+								<div className="columns small-12">
+
+								<div className="login-form">
+									<h1>¡Hola, de nuevo!</h1>
+									<h4>Accede a tus restaurantes favoritos!</h4>
+									<span>Si ya tienes una cuenta inicia sesión y si no registrate, es muy facil!</span>
+
+									<div className="input-group login">
+									  <span className="input-group-label"><i className="fa fa-user-circle-o fa-2x icono-login" aria-hidden="true"></i></span>
+									  <input className="input-group-field" type="number" />
+									</div>
+
+									<div className="input-group login">
+									  <span className="input-group-label"><i className="fa fa-unlock-alt fa-2x icono-login" aria-hidden="true"></i></span>
+									  <input className="input-group-field" type="number" />
+		
+									</div>
+
+									<div className="input-group login-buttons">
+									  <div className="input-group-button">
+									    <input type="submit" className="button" value="Entrar"/>
+									  </div>
+									  <div className="input-group-button">
+									    <input type="submit" className="button" value="Registrarse"/>
+									  </div>
+									</div>
+								</div>
+
+
+
+
+								<img src="img/banner.jpg" className="hide-for-small-only" />
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

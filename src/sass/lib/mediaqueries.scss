@@ -1,26 +1,68 @@
 /*----------  s  ----------*/
 
-@media only screen and (max-width: 40em) {
+@mixin large(){
+	.contenido-ficha{
+		min-height: 470px;
+	}
+	.espaciado{
+		 :hover .mapaPreview{
+		 	transform: scale(1.4) translateY(-20px);
+		 }
 
+	}
+	.fakeimg{
+		height: 300px;
+	}
+	.iconos-contacto i{
+		font-size: 2em !important;
+		padding-right: 10px !important;
+	}
+}
+
+@media only screen and (max-width: 40em) {
+	#fichas{
+		width:100%;
+	}
+	.espaciado{
+		 :hover .mapaPreview{
+		 	transform: scale(1.2) translateX(-20px);
+		 }
+
+	}
+	.fakeimg{
+		height: 250px;
+	}
+	.iconos-contacto i{
+		font-size: 3em !important;
+		padding-right: 30px !important;
+	}
  } 
 
 /*----------  M  ----------*/
 
 @media only screen and (min-width: 40.063em) and (max-width: 64em) {
-	.contenido-ficha{
-		min-height: 470px;
+	#fichas{
+		width:100%;
 	}
-
+	@include large();
 
 } 
 
 /*----------  XL  ----------*/
 
 @media only screen and (min-width: 64.063em) and (max-width: 90em) {
+	#fichas{
+		width:90%;
+	}
+	@include large();
  
  } 
 
 /*----------  XXL  ----------*/
 
 @media only screen and (min-width: 90.063em) {
+	#fichas{
+		width:80%;
+	}
+	@include large();
 } 

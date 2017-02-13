@@ -1,6 +1,16 @@
-window.timeLoad = 100;
-window.delay = 1200;
+/*----------  Variables globales para precargas  ----------*/
+
+window.timeLoad = 0;
+window.delay =4000;
 window.global = 1;
+
+/*----------  Validar driver  ----------*/
+
+window.delayFC = function(){
+   // window.timeLoad+=(window.timeLoad+delay)*.08;
+   window.timeLoad+=(delay)*.09;
+    return window.timeLoad;
+}
 var isMobile = {
     Android: function() {
         return navigator.userAgent.match(/Android/i);

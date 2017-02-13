@@ -37,7 +37,6 @@ function errores(err){
 
 const jsFiles = ['lib/isMobile.js',
                 'lib/jquery-3.1.1.js',
-                'lib/TimelineMax.min.js',
                 'lib/what-input.js',
                 'lib/foundation.js',
                 'lib/mapa.js',

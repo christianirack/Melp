@@ -8,9 +8,9 @@ $(function(){
         resumir = "[resumen]";
      }
 	$(document).foundation();
+	
 
 })
-
 function initMap(){
     console.log('mapa listo');
 }

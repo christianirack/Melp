@@ -9489,7 +9489,7 @@ function json() {
 			if (isMobile.any()) {
 				imgRandom = 'https://placeimg.com/250/90/nature?cache=' + Math.random();
 			} else {
-				imgRandom = 'https://placeimg.com/400/300/nature?cache=' + Math.random();
+				imgRandom = 'https://placeimg.com/300/300/nature?cache=' + Math.random();
 			}
 			keys.push({ 'key': key, 'img': imgRandom, 'object': val });
 		});
@@ -9520,7 +9520,7 @@ var Fichas = function (_React$Component) {
 				{ className: 'row expanded' },
 				_react2.default.createElement(
 					'div',
-					{ className: 'columns small-12 medium-8' },
+					{ className: 'columns small-12 medium-8 small-order-2' },
 					_react2.default.createElement(
 						'div',
 						{ className: 'row expanded', 'data-equalizer': true },
@@ -9533,15 +9533,75 @@ var Fichas = function (_React$Component) {
 				),
 				_react2.default.createElement(
 					'div',
-					{ className: 'columns small-12 medium-4' },
+					{ className: 'columns small-12 medium-4 small-order-1' },
 					_react2.default.createElement(
 						'div',
 						{ className: 'row expanded' },
 						_react2.default.createElement(
 							'div',
 							{ className: 'columns small-12' },
-							'Tiendas mejor rankeadas!',
-							_react2.default.createElement('img', { src: 'img/banner.jpg' })
+							_react2.default.createElement(
+								'div',
+								{ className: 'row' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'columns small-12' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'login-form' },
+										_react2.default.createElement(
+											'h1',
+											null,
+											'\xA1Hola, de nuevo!'
+										),
+										_react2.default.createElement(
+											'h4',
+											null,
+											'Accede a tus restaurantes favoritos!'
+										),
+										_react2.default.createElement(
+											'span',
+											null,
+											'Si ya tienes una cuenta inicia sesi\xF3n y si no registrate, es muy facil!'
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'input-group login' },
+											_react2.default.createElement(
+												'span',
+												{ className: 'input-group-label' },
+												_react2.default.createElement('i', { className: 'fa fa-user-circle-o fa-2x icono-login', 'aria-hidden': 'true' })
+											),
+											_react2.default.createElement('input', { className: 'input-group-field', type: 'number' })
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'input-group login' },
+											_react2.default.createElement(
+												'span',
+												{ className: 'input-group-label' },
+												_react2.default.createElement('i', { className: 'fa fa-unlock-alt fa-2x icono-login', 'aria-hidden': 'true' })
+											),
+											_react2.default.createElement('input', { className: 'input-group-field', type: 'number' })
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'input-group login-buttons' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'input-group-button' },
+												_react2.default.createElement('input', { type: 'submit', className: 'button', value: 'Entrar' })
+											),
+											_react2.default.createElement(
+												'div',
+												{ className: 'input-group-button' },
+												_react2.default.createElement('input', { type: 'submit', className: 'button', value: 'Registrarse' })
+											)
+										)
+									),
+									_react2.default.createElement('img', { src: 'img/banner.jpg', className: 'hide-for-small-only' })
+								)
+							)
 						)
 					)
 				)
@@ -9683,7 +9743,10 @@ var Ficha = function (_React$Component) {
 	function Ficha(props) {
 		_classCallCheck(this, Ficha);
 
-		return _possibleConstructorReturn(this, (Ficha.__proto__ || Object.getPrototypeOf(Ficha)).call(this, props));
+		var _this = _possibleConstructorReturn(this, (Ficha.__proto__ || Object.getPrototypeOf(Ficha)).call(this, props));
+
+		_this.state = { url: 'nose ' };
+		_this.handleClick = _this.handleClick.bind(_this);
 		/*
   this.state = { ecualizar:'data-equalizer' }
   if(window.global==1){
@@ -9691,6 +9754,7 @@ var Ficha = function (_React$Component) {
   	window.global++;
   	}
   */
+		return _this;
 	}
 
 	_createClass(Ficha, [{
@@ -9699,23 +9763,34 @@ var Ficha = function (_React$Component) {
 			//setMap(id,info); 
 			//alert({this.props.idmap});
 			//console.log({this.props.idmap});
+			/*
+   var object = {this}
+   var mapId = object.this.props.idmap;
+   var lat = object.this.props.lat;
+   var lng = object.this.props.lng;
+   */
 			var object = { this: this };
-			var mapId = object.this.props.idmap;
-			var lat = object.this.props.lat;
-			var lng = object.this.props.lng;
 
 			setTimeout(function () {
-				setMap(mapId, 'es info', lat, lng);
-				window.timeLoad += window.delay;
-				console.log("-----------------" + window.timeLoad);
-			}, window.timeLoad);
+				var ficha = 'ficha_' + object.this.props.idmap;
+				$('[data-ficha=' + ficha + ']').css('opacity', '1');
+				//console.log(ficha);
+			}, window.delayFC());
+		}
+	}, {
+		key: 'handleClick',
+		value: function handleClick(e) {
+			//var object = {this}
+			//var click = "fichaurl"+object.this.props.idmap;
+			var link = e.currentTarget.getAttribute('data-link');
+			window.open(link);
 		}
 	}, {
 		key: 'render',
 		value: function render() {
 			return _react2.default.createElement(
 				'div',
-				{ className: 'columns small-12 medium-6 large-4 xlarge-3' },
+				{ className: 'columns small-12 medium-6 large-4 xlarge-3 ficha-oculta', 'data-ficha': "ficha_" + this.props.idmap },
 				_react2.default.createElement(
 					'div',
 					{ className: 'espaciado' },
@@ -9752,14 +9827,41 @@ var Ficha = function (_React$Component) {
 								this.props.city
 							),
 							'.',
+							_react2.default.createElement('br', null),
+							_react2.default.createElement(
+								'a',
+								{ href: this.props.site, target: '_blank' },
+								_react2.default.createElement(
+									'span',
+									null,
+									this.props.site,
+									' '
+								)
+							),
 							_react2.default.createElement(
 								'div',
 								{ className: 'iconos-contacto' },
-								_react2.default.createElement('i', { className: 'fa fa-envelope fa-2x', 'aria-hidden': 'true', 'data-link': "mailto:" + this.props.email }),
-								_react2.default.createElement('i', { className: 'fa fa-external-link fa-2x', 'aria-hidden': 'true', 'data-link': this.props.site }),
-								_react2.default.createElement('i', { className: 'fa fa-whatsapp fa-2x', 'aria-hidden': 'true', 'data-link': this.props.phone })
+								_react2.default.createElement(
+									'a',
+									{ href: "mailto:" + this.props.email },
+									_react2.default.createElement('i', { className: 'fa fa-envelope fa-2x', 'aria-hidden': 'true' })
+								),
+								_react2.default.createElement(
+									'a',
+									{ href: this.props.site, target: '_blank' },
+									_react2.default.createElement('i', { className: 'fa fa-external-link fa-2x', 'aria-hidden': 'true' })
+								),
+								_react2.default.createElement(
+									'a',
+									{ href: "tel:+" + this.props.phone },
+									_react2.default.createElement('i', { className: 'fa fa-whatsapp fa-2x', 'aria-hidden': 'true' })
+								)
 							),
-							_react2.default.createElement('img', { className: 'mapaPreview ra', width: '150', src: "https://maps.googleapis.com/maps/api/staticmap?center=" + this.props.lat + "," + this.props.lng + "&zoom=14&scale=1&size=150x150&maptype=terrain&format=png&visual_refresh=true&&key=AIzaSyAKlZh-yaEKVySjN3g9hb94PF-I-7xroFU", alt: 'Google Map of Albany, NY' })
+							_react2.default.createElement(
+								'a',
+								{ href: 'https://www.google.com/maps/place/' + this.props.lat + ',' + this.props.lng, target: '_blank' },
+								_react2.default.createElement('img', { className: 'mapaPreview hide-for-small-only', width: '150', src: "https://maps.googleapis.com/maps/api/staticmap?center=" + this.props.lat + "," + this.props.lng + "&zoom=14&scale=1&size=200x200&maptype=terrain&format=png&visual_refresh=true&&key=AIzaSyAKlZh-yaEKVySjN3g9hb94PF-I-7xroFU", alt: 'Google Map of Albany, NY' })
+							)
 						)
 					)
 				)
