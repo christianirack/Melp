@@ -15,8 +15,9 @@ run = require('gulp-run');
 /*----------  Modo de compilación  ----------*/
 
 
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = 'production';
 const MODE = process.env.NODE_ENV;
+//export NODE_ENV=production
 
 /*----------  Play time  ----------*/
 
@@ -159,6 +160,13 @@ gulp.task('concatjs', ()=>
        /*----------  Producción  ----------*/
       gulp.src(js)
       .pipe(concat('bundle.js')).on('error', errores)
+       .pipe(obf({
+        encodeString: true,
+        encodeNumber: true,
+        replaceNames: true,
+        moveString: true,
+        exclusions: ["^_get_", "^_set_", "^_mtd_"]
+       }))
       .pipe(minifier({
         minify: true,
         collapseWhitespace: true,
@@ -166,13 +174,9 @@ gulp.task('concatjs', ()=>
         minifyJS: true,
         minifyCSS: false 
       })).on('error', errores)
-      .pipe(obf({
-        encodeString: true,
-        encodeNumber: true,
-        replaceNames: true,
-        moveString: true,
-        exclusions: ["^_get_", "^_set_", "^_mtd_"]
-       }))
+
+     
+
       .pipe(gulp.dest(dest+'js/'))
     }
   }
