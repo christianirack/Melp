@@ -32,6 +32,6 @@ Despliegues en local bajo un servidor Apache Dockerizado
 
 ***
 
-![alt tag](http://irack.mx/websites/melp/landing.png)
+![alt tag](http://irack.mx/images/melp.jpg)
 
 #### [Contacto](http://irack.mx/cv.pdf) ####
